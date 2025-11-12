@@ -132,7 +132,7 @@ useEffect(() => {
             <Text style={[styles.statusLabel, { color: statusColor }]}>
               {statusLabel}
             </Text>
-            <Text style={styles.statusSub}>Cảm ơn bạn đã lựa chọn Kinget!</Text>
+            <Text style={styles.statusSub}>Cảm ơn bạn đã lựa chọn !</Text>
           </View>
         </View>
 

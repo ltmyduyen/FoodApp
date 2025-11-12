@@ -122,12 +122,12 @@ const AdminAccount: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="light-content" backgroundColor="#F58220" />
+      <StatusBar barStyle="light-content" backgroundColor="#33691E" />
       <ScrollView style={styles.container}>
         {/* 👤 Header */}
         <View style={styles.header}>
           <Image
-            source={require("../images/avatar.jpg")}
+            source={require("../images/logo.png")}
             style={styles.avatar}
           />
           <Text style={styles.name}>{formData.name || "Quản trị viên"}</Text>
@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: "#fff" },
   container: { flex: 1, backgroundColor: "#F5F5F5" },
   header: {
-    backgroundColor: "#F58220",
+    backgroundColor: "#CDDC39",
     alignItems: "center",
     paddingVertical: 30,
     borderBottomLeftRadius: 20,
@@ -393,7 +393,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#F58220",
+    backgroundColor: "#33691E",
     borderRadius: 8,
     marginTop: 20,
     paddingVertical: 10,
@@ -408,7 +408,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   saveBtn: {
-    backgroundColor: "#F58220",
+    backgroundColor: "#33691E",
     borderRadius: 8,
     marginTop: 15,
     paddingVertical: 12,

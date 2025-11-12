@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,138 +8,118 @@ import {
   StyleSheet,
   Alert,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import { db } from "../../data/FireBase";
 import {
-  addDoc,
-  collection,
   serverTimestamp,
-  getDocs,
   doc,
   setDoc,
+  getDoc,
 } from "firebase/firestore";
 import { RouteProp, useRoute, useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../../navigation/AppNavigator";
 
-type Option = { label: string; price: number };
-
 type Food = {
+  id: string;            // slug: "com-bo-vien-xot-ca-chua"
   name: string;
-  category: string;
-  description?: string;
-  image?: string;
-  price?: number;
-  sizes?: Option[];
-  bases?: Option[];
-  toppings?: Option[];
-  addOns?: Option[];
+  description: string;
+  price: number;
+  calories: number;
+  category: string;      // "Cơm" | "Mỳ" | "Bún" | "Gimbab" | "Cuốn" | "Salad" | ...
+  image: string;         // URL
+  rating: number;        // 0..5
 };
 
-const categories = ["Pizza", "Burger", "Drink"];
+const categories = ["Cơm", "Mỳ", "Bún", "Gimbab", "Cuốn", "Salad"];
+
+function slugify(v: string) {
+  return v
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")        // bỏ dấu tiếng Việt
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
+}
 
 const AddFoodScreen: React.FC = () => {
   const navigation = useNavigation();
   const route = useRoute<RouteProp<RootStackParamList, "AddFood">>();
-  const { branchId } = route.params;
+  const { branchId } = route.params ?? {};
 
   const [food, setFood] = useState<Food>({
+    id: "",
     name: "",
-    category: "",
     description: "",
-    image: "",
     price: 0,
-    sizes: [],
-    bases: [],
-    toppings: [],
-    addOns: [],
+    calories: 0,
+    category: "",
+    image: "",
+    rating: 0,
   });
 
-  const handleChange = (key: keyof Food, value: any) => {
-    setFood({ ...food, [key]: value });
-  };
-
-  const handleArrayChange = (
-    key: keyof Pick<Food, "sizes" | "bases" | "toppings" | "addOns">,
-    index: number,
-    field: keyof Option,
-    value: string
-  ) => {
-    const arr = [...(food[key] as Option[])];
-    (arr[index] as any)[field] = field === "price" ? Number(value) : value;
-    if (key === "sizes" && index === 0 && field === "price") {
-      setFood({ ...food, [key]: arr, price: Number(value) });
-    } else {
-      setFood({ ...food, [key]: arr });
+  // auto sinh id theo name (nếu user chưa gõ id)
+  useEffect(() => {
+    if (!food.id) {
+      setFood((prev) => ({ ...prev, id: slugify(prev.name) }));
     }
-  };
+  }, [food.name]);
 
-  const addItem = (key: keyof Pick<Food, "sizes" | "bases" | "toppings" | "addOns">) => {
-    const arr = [...(food[key] as Option[])];
-    arr.push({ label: "", price: 0 });
-    setFood({ ...food, [key]: arr });
-  };
+  const setField = <K extends keyof Food>(key: K, val: Food[K]) =>
+    setFood({ ...food, [key]: val });
 
-  const removeItem = (key: keyof Pick<Food, "sizes" | "bases" | "toppings" | "addOns">, index: number) => {
-    const arr = [...(food[key] as Option[])];
-    arr.splice(index, 1);
-    setFood({ ...food, [key]: arr });
-  };
-
-  // ✅ Lưu món mới vào Firestore với ID tự tăng Fxx
   const handleSave = async () => {
-    if (!food.name.trim() || !food.category.trim()) {
-      Alert.alert("⚠️ Vui lòng nhập đầy đủ thông tin món!");
+    // validate
+    if (!food.name.trim() || !food.category.trim() || !food.image.trim()) {
+      Alert.alert("⚠️ Thiếu dữ liệu", "Vui lòng nhập Tên, Loại món và Ảnh URL.");
+      return;
+    }
+    const id = (food.id || slugify(food.name)).trim();
+    if (!id) {
+      Alert.alert("⚠️ Lỗi ID", "Không tạo được ID cho món. Hãy nhập lại tên hoặc gõ ID.");
       return;
     }
 
     try {
-      // ======= SINH ID Fxx CHO FOODS =======
-      const foodsSnap = await getDocs(collection(db, "foods"));
-      const foodCount = foodsSnap.size;
-      const newFoodId = `F${String(foodCount + 1).padStart(2, "0")}`;
+      // tránh ghi đè nếu đã tồn tại
+      const ref = doc(db, "foods", id);
+      const existed = await getDoc(ref);
+      if (existed.exists()) {
+        Alert.alert("❗ ID đã tồn tại", `Món với ID "${id}" đã có. Hãy đổi ID.`);
+        return;
+      }
 
-      // ======= TẠO DỮ LIỆU MÓN =======
+      // chuẩn hóa dữ liệu
       const newFood: Food = {
+        id,
         name: food.name.trim(),
-        category: food.category.trim(),
         description: food.description?.trim() || "",
-        image: food.image?.trim() || "",
-        price:
-          food.sizes && food.sizes.length > 0
-            ? Number(food.sizes[0].price)
-            : Number(food.price || 0),
-        sizes: Array.isArray(food.sizes) ? food.sizes : [],
-        bases: Array.isArray(food.bases) ? food.bases : [],
-        toppings: Array.isArray(food.toppings) ? food.toppings : [],
-        addOns: Array.isArray(food.addOns) ? food.addOns : [],
+        price: Number(food.price) || 0,
+        calories: Number(food.calories) || 0,
+        category: food.category.trim(),
+        image: food.image.trim(),
+        rating: Math.max(0, Math.min(5, Number(food.rating) || 0)),
       };
 
-      // ======= LƯU VÀO COLLECTION FOODS =======
-      await setDoc(doc(db, "foods", newFoodId), {
+      // lưu foods/{id}
+      await setDoc(ref, {
         ...newFood,
         createdAt: serverTimestamp(),
       });
 
-      // ======= SINH ID Fxx CHO BRANCHFOODS (nếu có branchId) =======
+      // nếu có branch → tạo branches/{branchId}/branchFoods/{id}
       if (branchId) {
-        const branchFoodsSnap = await getDocs(
-          collection(db, `branches/${branchId}/branchFoods`)
-        );
-        const branchFoodCount = branchFoodsSnap.size;
-        const newBranchFoodId = `F${String(branchFoodCount + 1).padStart(2, "0")}`;
-
-        await setDoc(
-          doc(db, `branches/${branchId}/branchFoods`, newBranchFoodId),
-          {
-            foodId: newFoodId,
-            foodName: newFood.name,
-            isAvailable: true,
-            stock: 0,
-          }
-        );
+        const bfRef = doc(db, `branches/${branchId}/branchFoods`, id);
+        await setDoc(bfRef, {
+          foodId: id,
+          foodName: newFood.name,
+          isAvailable: true,
+          stock: 0,
+          createdAt: serverTimestamp(),
+        });
       }
 
-      Alert.alert("✅ Thành công", `Đã thêm món ${newFood.name} (${newFoodId})`);
+      Alert.alert("✅ Thành công", `Đã thêm món ${newFood.name} (${id})`);
       navigation.goBack();
     } catch (err) {
       console.error("❌ Lỗi thêm món:", err);
@@ -147,82 +127,24 @@ const AddFoodScreen: React.FC = () => {
     }
   };
 
-  // 🧩 Giao diện động theo loại món
-  const renderDynamicFields = () => {
-    switch (food.category) {
-      case "Pizza":
-        return (
-          <>
-            <Section
-              title="🍕 Kích cỡ"
-              data={food.sizes || []}
-              onAdd={() => addItem("sizes")}
-              onRemove={(i) => removeItem("sizes", i)}
-              onChange={(i, f, v) => handleArrayChange("sizes", i, f, v)}
-            />
-            <Section
-              title="🍞 Đế bánh"
-              data={food.bases || []}
-              onAdd={() => addItem("bases")}
-              onRemove={(i) => removeItem("bases", i)}
-              onChange={(i, f, v) => handleArrayChange("bases", i, f, v)}
-            />
-            <Section
-              title="🧀 Topping"
-              data={food.toppings || []}
-              onAdd={() => addItem("toppings")}
-              onRemove={(i) => removeItem("toppings", i)}
-              onChange={(i, f, v) => handleArrayChange("toppings", i, f, v)}
-            />
-          </>
-        );
-
-      case "Burger":
-        return (
-          <>
-            <Section
-              title="🍔 Kích cỡ"
-              data={food.sizes || []}
-              onAdd={() => addItem("sizes")}
-              onRemove={(i) => removeItem("sizes", i)}
-              onChange={(i, f, v) => handleArrayChange("sizes", i, f, v)}
-            />
-            <Section
-              title="🥓 Add-ons"
-              data={food.addOns || []}
-              onAdd={() => addItem("addOns")}
-              onRemove={(i) => removeItem("addOns", i)}
-              onChange={(i, f, v) => handleArrayChange("addOns", i, f, v)}
-            />
-          </>
-        );
-
-      case "Drink":
-        return (
-          <Section
-            title="🥤 Kích cỡ"
-            data={food.sizes || []}
-            onAdd={() => addItem("sizes")}
-            onRemove={(i) => removeItem("sizes", i)}
-            onChange={(i, f, v) => handleArrayChange("sizes", i, f, v)}
-          />
-        );
-
-      default:
-        return null;
-    }
-  };
-
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>➕ Thêm món mới</Text>
 
+      <Text style={styles.label}>ID (slug)</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="com-bo-vien-xot-ca-chua"
+        value={food.id}
+        onChangeText={(v) => setField("id", slugify(v))}
+      />
+
       <Text style={styles.label}>Tên món</Text>
       <TextInput
         style={styles.input}
-        value={food.name}
-        onChangeText={(v) => handleChange("name", v)}
         placeholder="Nhập tên món"
+        value={food.name}
+        onChangeText={(v) => setField("name", v)}
       />
 
       <Text style={styles.label}>Loại món</Text>
@@ -231,13 +153,10 @@ const AddFoodScreen: React.FC = () => {
           <TouchableOpacity
             key={cat}
             style={[styles.catBtn, food.category === cat && styles.catBtnActive]}
-            onPress={() => handleChange("category", cat)}
+            onPress={() => setField("category", cat)}
           >
             <Text
-              style={[
-                styles.catText,
-                food.category === cat && styles.catTextActive,
-              ]}
+              style={[styles.catText, food.category === cat && styles.catTextActive]}
             >
               {cat}
             </Text>
@@ -248,21 +167,46 @@ const AddFoodScreen: React.FC = () => {
       <Text style={styles.label}>Mô tả</Text>
       <TextInput
         style={[styles.input, { height: 80 }]}
-        value={food.description}
-        onChangeText={(v) => handleChange("description", v)}
-        multiline
         placeholder="Mô tả món ăn"
+        multiline
+        value={food.description}
+        onChangeText={(v) => setField("description", v)}
       />
 
       <Text style={styles.label}>Ảnh URL</Text>
       <TextInput
         style={styles.input}
-        value={food.image}
-        onChangeText={(v) => handleChange("image", v)}
         placeholder="https://..."
+        value={food.image}
+        onChangeText={(v) => setField("image", v)}
       />
 
-      {renderDynamicFields()}
+      <Text style={styles.label}>Giá (VND)</Text>
+      <TextInput
+        style={styles.input}
+        keyboardType="numeric"
+        placeholder="59000"
+        value={food.price ? String(food.price) : ""}
+        onChangeText={(v) => setField("price", Number(v))}
+      />
+
+      <Text style={styles.label}>Calories</Text>
+      <TextInput
+        style={styles.input}
+        keyboardType="numeric"
+        placeholder="395"
+        value={food.calories ? String(food.calories) : ""}
+        onChangeText={(v) => setField("calories", Number(v))}
+      />
+
+      <Text style={styles.label}>Rating (0 – 5)</Text>
+      <TextInput
+        style={styles.input}
+        keyboardType="numeric"
+        placeholder="4.7"
+        value={food.rating ? String(food.rating) : ""}
+        onChangeText={(v) => setField("rating", Number(v))}
+      />
 
       <TouchableOpacity style={styles.saveBtn} onPress={handleSave}>
         <Text style={styles.saveText}>💾 Lưu món</Text>
@@ -271,52 +215,11 @@ const AddFoodScreen: React.FC = () => {
   );
 };
 
-const Section = ({
-  title,
-  data,
-  onAdd,
-  onRemove,
-  onChange,
-}: {
-  title: string;
-  data: Option[];
-  onAdd: () => void;
-  onRemove: (i: number) => void;
-  onChange: (i: number, field: keyof Option, val: string) => void;
-}) => (
-  <>
-    <Text style={styles.section}>{title}</Text>
-    {data.map((item, i) => (
-      <View key={i} style={styles.row}>
-        <TextInput
-          style={[styles.input, { flex: 1, marginRight: 8 }]}
-          placeholder="Tên"
-          value={item.label}
-          onChangeText={(v) => onChange(i, "label", v)}
-        />
-        <TextInput
-          style={[styles.input, { width: 100 }]}
-          placeholder="Giá"
-          keyboardType="numeric"
-          value={String(item.price)}
-          onChangeText={(v) => onChange(i, "price", v)}
-        />
-        <TouchableOpacity onPress={() => onRemove(i)}>
-          <Ionicons name="trash-outline" size={22} color="red" />
-        </TouchableOpacity>
-      </View>
-    ))}
-    <TouchableOpacity onPress={onAdd}>
-      <Text style={styles.addBtn}>+ Thêm</Text>
-    </TouchableOpacity>
-  </>
-);
-
 export default AddFoodScreen;
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff", padding: 16 },
-  title: { fontSize: 20, fontWeight: "bold", color: "#F58220", marginBottom: 12 },
+  title: { fontSize: 20, fontWeight: "800", color: "#33691E", marginBottom: 12 },
   label: { fontWeight: "600", marginTop: 10, color: "#333" },
   input: {
     borderWidth: 1,
@@ -325,26 +228,24 @@ const styles = StyleSheet.create({
     padding: 10,
     marginTop: 4,
   },
-  categoryRow: { flexDirection: "row", marginVertical: 8 },
+  categoryRow: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginVertical: 8 },
   catBtn: {
     borderWidth: 1,
-    borderColor: "#F58220",
+    borderColor: "#33691E",
     borderRadius: 8,
     paddingVertical: 6,
     paddingHorizontal: 14,
     marginRight: 8,
+    marginBottom: 6,
   },
-  catBtnActive: { backgroundColor: "#F58220" },
-  catText: { color: "#F58220", fontWeight: "500" },
+  catBtnActive: { backgroundColor: "#CDDC39" },
+  catText: { color: "black", fontWeight: "500" },
   catTextActive: { color: "#fff" },
-  section: { fontWeight: "bold", fontSize: 16, marginTop: 16, color: "#F58220" },
-  row: { flexDirection: "row", alignItems: "center", marginTop: 8 },
-  addBtn: { color: "#F58220", fontWeight: "600", marginTop: 4 },
   saveBtn: {
-    backgroundColor: "#F58220",
+    backgroundColor: "#33691E",
     borderRadius: 8,
     paddingVertical: 14,
-    marginTop: 30,
+    marginTop: 24,
     alignItems: "center",
   },
   saveText: { color: "#fff", fontWeight: "bold" },

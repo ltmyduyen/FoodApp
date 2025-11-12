@@ -129,7 +129,7 @@ const RestaurantOrderScreen: React.FC<{
         <Text style={styles.headerTitle}>Quản lý đơn hàng</Text>
         <Ionicons name="receipt-outline" size={30} color="#fff" />
       </View>
-      <StatusBar barStyle="light-content" backgroundColor="#F58220" />
+      <StatusBar barStyle="light-content" backgroundColor="#33691E" />
 
       {/* Tabs */}
       <View style={styles.tabWrapper}>
@@ -336,7 +336,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff" },
 
   header: {
-    backgroundColor: "#F58220",
+    backgroundColor: "#CDDC39",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -356,7 +356,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginRight: 10,
   },
-  activeTabButton: { backgroundColor: "#F58220" },
+  activeTabButton: { backgroundColor: "#33691E" },
   tabText: { fontSize: 15, color: "#333", fontWeight: "600" },
   activeTabText: { color: "#fff" },
 

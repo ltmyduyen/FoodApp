@@ -89,7 +89,7 @@ const UserDetail = ({ route, navigation }: any) => {
           {/* 🔘 Nút Quay lại + Lưu */}
           <View style={styles.buttonRow}>
             <TouchableOpacity style={styles.cancelBtn} onPress={handleCancelEdit}>
-              <Ionicons name="arrow-undo-outline" size={18} color="#F58220" />
+              <Ionicons name="arrow-undo-outline" size={18} color="#CDDC39" />
               <Text style={styles.cancelText}>Quay lại</Text>
             </TouchableOpacity>
 
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#F58220",
+    backgroundColor: "#CDDC39",
     padding: 16,
     gap: 12,
   },
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   infoLabel: { color: "#333", fontWeight: "600" },
   infoValue: { color: "#555", flexShrink: 1, textAlign: "right" },
   editBtn: {
-    backgroundColor: "#F58220",
+    backgroundColor: "#33691E",
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
@@ -184,17 +184,17 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#F58220",
+    borderColor: "#33691E",
     borderRadius: 8,
     paddingVertical: 10,
     paddingHorizontal: 16,
     flex: 1,
     marginRight: 8,
   },
-  cancelText: { color: "#F58220", fontWeight: "bold", marginLeft: 6 },
+  cancelText: { color: "#33691E", fontWeight: "bold", marginLeft: 6 },
   saveBtn: {
     flex: 1,
-    backgroundColor: "#F58220",
+    backgroundColor: "#33691E",
     borderRadius: 8,
     paddingVertical: 12,
     marginLeft: 8,

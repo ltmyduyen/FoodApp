@@ -86,7 +86,7 @@ const DroneDetail = ({ route, navigation }: any) => {
 
           <View style={styles.buttonRow}>
             <TouchableOpacity style={styles.cancelBtn} onPress={handleCancelEdit}>
-              <Ionicons name="arrow-undo-outline" size={18} color="#F58220" />
+              <Ionicons name="arrow-undo-outline" size={18} color="#33691E"></Ionicons>
               <Text style={styles.cancelText}>Quay lại</Text>
             </TouchableOpacity>
 
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#F58220",
+    backgroundColor: "#33691E",
     padding: 16,
     gap: 12,
   },
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
   infoLabel: { color: "#333", fontWeight: "600" },
   infoValue: { color: "#555", flexShrink: 1, textAlign: "right" },
   editBtn: {
-    backgroundColor: "#F58220",
+    backgroundColor: "#33691E",
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",

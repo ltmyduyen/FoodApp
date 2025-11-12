@@ -158,11 +158,11 @@ const RestaurantAccount: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="light-content" backgroundColor="#F58220" />
+      <StatusBar barStyle="light-content" backgroundColor="#33691E" />
       <ScrollView style={styles.container}>
         {/* 👤 Header */}
         <View style={styles.header}>
-          <Image source={require("../images/avatar.jpg")} style={styles.avatar} />
+          <Image source={require("../images/logo.png")} style={styles.avatar} />
           <Text style={styles.name}>{formData.name || "Nhà hàng"}</Text>
           <Text style={styles.phone}>{formData.email || "restaurant@mail.com"}</Text>
         </View>
@@ -296,7 +296,7 @@ const OptionItem = ({ icon, title, onPress }: any) => (
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: "#fff" },
   container: { flex: 1, backgroundColor: "#F5F5F5" },
-  header: { backgroundColor: "#F58220", alignItems: "center", paddingVertical: 30, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 },
+  header: { backgroundColor: "#CDDC39", alignItems: "center", paddingVertical: 30, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 },
   avatar: { width: 90, height: 90, borderRadius: 50, backgroundColor: "#fff", marginBottom: 10 },
   name: { fontSize: 18, fontWeight: "bold", color: "#fff" },
   phone: { color: "#fff", opacity: 0.9, fontSize: 14 },
@@ -309,7 +309,7 @@ const styles = StyleSheet.create({
   infoRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", borderBottomWidth: 1, borderColor: "#eee", paddingVertical: 10 },
   infoLabel: { color: "#333", fontWeight: "600", fontSize: 14 },
   infoValue: { color: "#555", fontSize: 14, flexShrink: 1, textAlign: "right" },
-  editBtn: { flexDirection: "row", alignItems: "center", justifyContent: "center", backgroundColor: "#F58220", borderRadius: 8, marginTop: 20, paddingVertical: 10 },
+  editBtn: { flexDirection: "row", alignItems: "center", justifyContent: "center", backgroundColor: "#33691E", borderRadius: 8, marginTop: 20, paddingVertical: 10 },
   editText: { color: "#fff", fontWeight: "bold", marginLeft: 6 },
   inputLabel: { color: "#555", marginBottom: 6, fontWeight: "600" },
   input: { borderWidth: 1, borderColor: "#ddd", borderRadius: 8, padding: 10, backgroundColor: "#fff" },

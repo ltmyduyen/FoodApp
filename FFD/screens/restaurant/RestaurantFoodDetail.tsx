@@ -291,7 +291,7 @@ export default RestaurantFoodDetail;
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff", padding: 16 },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
-  label: { fontSize: 16, fontWeight: "bold", color: "#F58220", marginTop: 10 },
+  label: { fontSize: 16, fontWeight: "bold", color: "#33691E", marginTop: 10 },
   input: {
     borderWidth: 1,
     borderColor: "#ddd",
@@ -299,9 +299,9 @@ const styles = StyleSheet.create({
     padding: 10,
     marginTop: 4,
   },
-  section: { fontWeight: "bold", fontSize: 16, marginTop: 16, color: "#F58220" },
+  section: { fontWeight: "bold", fontSize: 16, marginTop: 16, color: "#33691E" },
   row: { flexDirection: "row", alignItems: "center", marginTop: 8 },
-  addBtn: { color: "#F58220", fontWeight: "600", marginTop: 4 },
+  addBtn: { color: "#33691E", fontWeight: "600", marginTop: 4 },
   imageWrapper: { alignItems: "center", marginBottom: 12 },
   image: {
     width: "90%",
@@ -310,7 +310,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f9f9f9",
   },
   saveBtn: {
-    backgroundColor: "#F58220",
+    backgroundColor: "#33691E",
     paddingVertical: 14,
     borderRadius: 8,
     alignItems: "center",

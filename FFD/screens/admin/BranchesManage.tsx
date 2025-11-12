@@ -49,7 +49,7 @@ const BranchesManage = () => {
           <TouchableOpacity style={styles.card}                            
                             onPress={() => navigation.navigate("BranchDetail", { branch: item })}
 >
-            <Ionicons name="business-outline" size={36} color="#F58220" />
+            <Ionicons name="business-outline" size={36} color="#33691E" />
             <View style={{ flex: 1 }}>
               <Text style={styles.name}>{item.name}</Text>
               <Text style={styles.sub}>{item.address}</Text>
@@ -82,6 +82,6 @@ const styles = StyleSheet.create({
   name: { fontSize: 16, fontWeight: "600" },
   sub: { fontSize: 13, color: "#777" },
   input: { borderWidth: 1, borderColor: "#ccc", borderRadius: 6, marginBottom: 10, padding: 8 },
-  saveBtn: { backgroundColor: "#F58220", padding: 10, borderRadius: 8, alignItems: "center" },
+  saveBtn: { backgroundColor: "#33691E", padding: 10, borderRadius: 8, alignItems: "center" },
   saveText: { color: "#fff", fontWeight: "bold" },
 });

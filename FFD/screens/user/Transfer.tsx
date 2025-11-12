@@ -69,9 +69,9 @@ Số tiền: ${orderData.total.toLocaleString("vi-VN")}₫`;
 
       {/* 🏦 Thông tin ngân hàng */}
       <View style={styles.bankBox}>
-        <Text style={styles.bankLine}>Ngân hàng: VPBank</Text>
-        <Text style={styles.bankLine}>Số tài khoản: 123 456 789</Text>
-        <Text style={styles.bankLine}>Chủ TK: Kinget FastFood</Text>
+        <Text style={styles.bankLine}>Ngân hàng: MBBank</Text>
+        <Text style={styles.bankLine}>Số tài khoản: 0941 863 121</Text>
+        <Text style={styles.bankLine}>Chủ TK: Healthy Bites</Text>
       </View>
 
       <Text style={styles.amountText}>
@@ -120,7 +120,7 @@ Số tiền: ${orderData.total.toLocaleString("vi-VN")}₫`;
             <Text style={styles.thanksText}>
               Cảm ơn bạn đã lựa chọn{" "}
               <Text style={{ color: "#33691E", fontWeight: "bold" }}>
-                Kinget 🍔
+                
               </Text>
             </Text>
 

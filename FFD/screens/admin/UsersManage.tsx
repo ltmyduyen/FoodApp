@@ -35,13 +35,13 @@ const UsersManage = ({ navigation }: any) => {  const [users, setUsers] = useSta
   if (loading)
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#F58220" />
+        <ActivityIndicator size="large" color="#33691E" />
       </View>
     );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>👥 Danh sách người dùng</Text>
+      <Text style={styles.header}>Danh sách tài khoảng</Text>
       <FlatList
         data={users}
         keyExtractor={(item) => item.id}
@@ -49,7 +49,7 @@ const UsersManage = ({ navigation }: any) => {  const [users, setUsers] = useSta
           <TouchableOpacity style={styles.card} 
                             onPress={() => navigation.navigate("UserDetail", { user: item })}
             >
-            <Ionicons name="person-circle-outline" size={40} color="#F58220" />
+            <Ionicons name="person-circle-outline" size={40} color="#33691E" />
             <View style={{ flex: 1 }}>
               <Text style={styles.name}>{item.firstName} {item.lastName}</Text>
               <Text style={styles.sub}>{item.email}</Text>
@@ -98,6 +98,6 @@ const styles = StyleSheet.create({
   name: { fontSize: 16, fontWeight: "600" },
   sub: { fontSize: 13, color: "#777" },
   input: { borderWidth: 1, borderColor: "#ccc", borderRadius: 6, marginBottom: 10, padding: 8 },
-  saveBtn: { backgroundColor: "#F58220", padding: 10, borderRadius: 8, alignItems: "center" },
+  saveBtn: { backgroundColor: "#33691E", padding: 10, borderRadius: 8, alignItems: "center" },
   saveText: { color: "#fff", fontWeight: "bold" },
 });

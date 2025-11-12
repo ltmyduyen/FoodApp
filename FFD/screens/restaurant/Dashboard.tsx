@@ -179,7 +179,7 @@ useEffect(() => {
           <Switch
             value={isOpen}
             onValueChange={handleToggleOpen}
-            trackColor={{ false: "#ccc", true: "#F58220" }}
+            trackColor={{ false: "#ccc", true: "red" }}
             thumbColor="#fff"
           />
         </View>
@@ -218,7 +218,7 @@ useEffect(() => {
                 })
               }
             >
-              <Ionicons name={item.icon as any} size={26} color="#F58220" />
+              <Ionicons name={item.icon as any} size={26} color="#33691E" />
               <Text style={styles.gridText}>{item.label}</Text>
             </TouchableOpacity>
           ))}
@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: "#fff" },
   loadingBox: { flex: 1, justifyContent: "center", alignItems: "center" },
   headerContainer: {
-    backgroundColor: "#F58220",
+    backgroundColor: "#33691E",
     borderBottomLeftRadius: 14,
     borderBottomRightRadius: 14,
     paddingTop: StatusBar.currentHeight || 40,
