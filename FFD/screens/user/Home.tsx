@@ -9,14 +9,13 @@ import {
   FlatList,
   ScrollView,
   ActivityIndicator,
-  Keyboard,
   Modal,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Swiper from "react-native-swiper";
 import { Video, ResizeMode } from "expo-av";
-import { collection, onSnapshot, getDocs } from "firebase/firestore";
+import { collection, doc, getDoc, onSnapshot, getDocs } from "firebase/firestore";
 import { db } from "../../data/FireBase";
 import { Food } from "../../types/food";
 import FoodCard from "../../components/FoodCard";
@@ -57,31 +56,36 @@ const HomeScreen: React.FC = () => {
     return unsubscribe;
   }, []);
 
-  // 🍔 Lấy món ăn theo chi nhánh hiện tại
+  // 🍔 Lấy món ăn theo chi nhánh hiện tại (dựa vào branchFoods)
   useEffect(() => {
     if (!selectedBranch) return;
-    const branchRef = collection(db, `branches/${selectedBranch}/branchFoods`);
-    const unsubscribe = onSnapshot(branchRef, async (snapshot) => {
+
+    const branchFoodsRef = collection(db, `branches/${selectedBranch}/branchFoods`);
+
+    const unsubscribe = onSnapshot(branchFoodsRef, async (snapshot) => {
       const branchFoods = snapshot.docs
         .map((d) => d.data())
-        .filter((f: any) => f.isAvailable === true || f.isAvailable === "true");
+        .filter((f: any) => f.isActive === true);
 
-      const foodNames = branchFoods.map((f: any) => f.foodName);
-
-      if (foodNames.length === 0) {
+      if (branchFoods.length === 0) {
         setFoods([]);
         setFilteredFoods([]);
         setLoading(false);
         return;
       }
 
+      // Lấy danh sách foodId đang active
+      const foodIds = branchFoods.map((f: any) => f.foodId);
+
+      // Lấy toàn bộ món ăn trong foods
       const foodsSnap = await getDocs(collection(db, "foods"));
       const allFoods = foodsSnap.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       })) as Food[];
 
-      const visibleFoods = allFoods.filter((f) => foodNames.includes(f.name));
+      // Lọc những món có foodId trùng với branchFoods
+      const visibleFoods = allFoods.filter((f) => foodIds.includes(f.id));
       setFoods(visibleFoods);
       setFilteredFoods(visibleFoods);
       setLoading(false);
@@ -90,12 +94,12 @@ const HomeScreen: React.FC = () => {
     return () => unsubscribe();
   }, [selectedBranch]);
 
-  // 💾 Lưu branch chọn vào AsyncStorage để các screen khác đọc lại
+  // 💾 Lưu branch được chọn vào AsyncStorage
   useEffect(() => {
     if (selectedBranch) AsyncStorage.setItem("selectedBranch", selectedBranch);
   }, [selectedBranch]);
 
-  // 🧍 Tên người dùng
+  // 🧍 Lấy tên người dùng hiển thị
   const userName =
     user?.firstName && user?.lastName
       ? `${user.firstName} ${user.lastName}`
@@ -178,29 +182,10 @@ const HomeScreen: React.FC = () => {
             dotStyle={{ backgroundColor: "#ccc" }}
             activeDotStyle={{ backgroundColor: "#F58220" }}
           >
-            <Video
-              source={require("../images/slider4.mp4")}
-              style={styles.banner}
-              resizeMode={ResizeMode.COVER}
-              shouldPlay
-              isLooping
-              useNativeControls={false}
-            />
-            <Image
-              source={require("../images/slider1.png")}
-              style={styles.banner}
-              resizeMode="cover"
-            />
-            <Image
-              source={require("../images/slider2.png")}
-              style={styles.banner}
-              resizeMode="cover"
-            />
-            <Image
-              source={require("../images/slider3.png")}
-              style={styles.banner}
-              resizeMode="cover"
-            />
+            
+            <Image source={require("../images/slide1.png")} style={styles.banner} />
+            <Image source={require("../images/slide2.png")} style={styles.banner} />
+            <Image source={require("../images/slide3.png")} style={styles.banner} />
           </Swiper>
         </View>
 
@@ -245,6 +230,7 @@ const HomeScreen: React.FC = () => {
                   setSelectedBranch(b.id);
                   AsyncStorage.setItem("selectedBranch", b.id);
                   setBranchModalVisible(false);
+                  setLoading(true);
                 }}
               >
                 <Ionicons
@@ -273,7 +259,7 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff" },
   headerContainer: {
-    backgroundColor: "#F58220",
+    backgroundColor: "#CDDC39",
     paddingVertical: 16,
     paddingHorizontal: 14,
     borderBottomLeftRadius: 10,
@@ -286,20 +272,16 @@ const styles = StyleSheet.create({
   },
   headerLeft: { flexDirection: "row", alignItems: "center" },
   headerLoginText: {
-    color: "white",
+    color: "black",
     fontSize: 20,
     fontWeight: "bold",
     marginLeft: 8,
   },
-  headerRight: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
+  headerRight: { flexDirection: "row", alignItems: "center", gap: 12 },
   branchSelect: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(247, 241, 241, 0.2)",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 8,
@@ -334,7 +316,7 @@ const styles = StyleSheet.create({
   deliveryTitle: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#777",
+    color: "black",
     marginBottom: 10,
   },
   addressRow: {

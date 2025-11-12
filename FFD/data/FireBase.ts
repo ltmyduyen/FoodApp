@@ -6,14 +6,15 @@ import { getFirestore } from "firebase/firestore";
 
 // ✅ Cấu hình Firebase của bạn
 const firebaseConfig = {
-  apiKey: "AIzaSyC1bGfFwoCdsjJ6GsvO4F7loFqzDdjd4FE",
-  authDomain: "fastfood-delivery-5f17c.firebaseapp.com",
-  projectId: "fastfood-delivery-5f17c",
-  storageBucket: "fastfood-delivery-5f17c.firebasestorage.app",
-  messagingSenderId: "507323974003",
-  appId: "1:507323974003:web:41dba8a364210922460506",
-  measurementId: "G-P8D12NNMRN",
+  apiKey: "AIzaSyCzYg1Di5hS48SDnw2VtxPwtOPV6iMmDeg",
+  authDomain: "foodapp-30765.firebaseapp.com",
+  projectId: "foodapp-30765",
+  storageBucket: "foodapp-30765.firebasestorage.app",
+  messagingSenderId: "1060177711103",
+  appId: "1:1060177711103:web:c82bea8b120b22d72461ca",
+  measurementId: "G-4D8VPKJGB9"
 };
+
 
 // ✅ Khởi tạo app & Firestore
 const app = initializeApp(firebaseConfig);

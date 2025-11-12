@@ -138,11 +138,11 @@ useEffect(() => {
         {/* 🏠 Thông tin người nhận */}
         <View style={styles.addressCard}>
           <View style={styles.infoHeader}>
-            <Ionicons name="receipt-outline" size={20} color="#F58220" />
+            <Ionicons name="receipt-outline" size={20} color="#33691E" />
             <Text style={styles.infoTitle}>Thông tin người nhận</Text>
           </View>
         <View style={styles.addressRow}>
-            <Ionicons name="location-outline" size={20} color="#F58220" />
+            <Ionicons name="location-outline" size={20} color="#33691E" />
             <View style={{ flex: 1, marginLeft: 8 }}>
               <Text style={styles.receiverName}>
                 {orderData.receiverName || "Nguyễn Văn A"}
@@ -163,7 +163,7 @@ useEffect(() => {
         {/* 🍔 Chi tiết đơn hàng theo chi nhánh */}
         <View style={styles.itemCard}>
           <View style={styles.infoHeader}>
-            <Ionicons name="storefront-outline" size={20} color="#F58220" />
+            <Ionicons name="storefront-outline" size={20} color="#33691E" />
             <Text style={styles.infoTitle}>{orderData.branchName || "Không rõ"}</Text>
           </View>
 
@@ -267,7 +267,7 @@ useEffect(() => {
         {/* 💳 Thông tin đơn hàng */}
         <View style={styles.detailCard}>
           <View style={styles.infoHeader}>
-            <Ionicons name="receipt-outline" size={20} color="#F58220" />
+            <Ionicons name="receipt-outline" size={20} color="#33691E" />
             <Text style={styles.infoTitle}>Thông tin đơn hàng</Text>
           </View>
           <View style={styles.detailRow}>

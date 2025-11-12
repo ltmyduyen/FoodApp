@@ -135,7 +135,7 @@ const AccountScreen: React.FC = () => {
             source={
               user?.avatar
                 ? { uri: user.avatar }
-                : require("../images/avatar.jpg")
+                : require("../images/logo.png")
             }
             style={styles.avatar}
           />
@@ -364,7 +364,7 @@ const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: "#fff" },
   container: { flex: 1, backgroundColor: "#F5F5F5" },
   header: {
-    backgroundColor: "#F58220",
+    backgroundColor: "#33691E",
     alignItems: "center",
     paddingVertical: 30,
     borderBottomLeftRadius: 20,
@@ -414,7 +414,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   logoutText: {
-    color: "#F44336",
+    color: "#33691E",
     fontSize: 16,
     fontWeight: "600",
     marginLeft: 8,
@@ -433,7 +433,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#F58220",
+    backgroundColor: "#33691E",
     borderRadius: 8,
     marginTop: 20,
     paddingVertical: 10,
@@ -448,7 +448,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   saveBtn: {
-    backgroundColor: "#F58220",
+    backgroundColor: "#33691E",
     borderRadius: 8,
     marginTop: 15,
     paddingVertical: 12,

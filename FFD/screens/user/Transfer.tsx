@@ -25,9 +25,9 @@ const TransferScreen = () => {
   const [scanning, setScanning] = useState(false);
 
   // 🔹 Chuỗi nội dung QR mô phỏng
-  const qrValue = `Ngân hàng: VPBank
-Số TK: 123456789
-Chủ TK: Kinget FastFood
+  const qrValue = `Ngân hàng: MBBank
+Số TK: 0941863121
+Chủ TK: HealthyBite
 Nội dung: THANHTOAN_${orderData.userId}_${Math.floor(Math.random() * 10000)}
 Số tiền: ${orderData.total.toLocaleString("vi-VN")}₫`;
 
@@ -119,7 +119,7 @@ Số tiền: ${orderData.total.toLocaleString("vi-VN")}₫`;
             </Text>
             <Text style={styles.thanksText}>
               Cảm ơn bạn đã lựa chọn{" "}
-              <Text style={{ color: "#F58220", fontWeight: "bold" }}>
+              <Text style={{ color: "#33691E", fontWeight: "bold" }}>
                 Kinget 🍔
               </Text>
             </Text>
@@ -155,13 +155,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#F58220",
+    color: "#33691E",
     marginBottom: 15,
   },
   bankBox: {
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#F58220",
+    borderColor: "#33691E",
     borderRadius: 10,
     padding: 12,
     backgroundColor: "#FFF7ED",
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   confirmBtn: {
-    backgroundColor: "#F58220",
+    backgroundColor: "#33691E",
     borderRadius: 8,
     paddingVertical: 12,
     paddingHorizontal: 40,

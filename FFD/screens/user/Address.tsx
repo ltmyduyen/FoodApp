@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   headerTitle: { fontSize: 18, fontWeight: "bold", marginLeft: 12 },
   tabs: { flexDirection: "row", marginBottom: 16 },
   tab: { flex: 1, textAlign: "center", padding: 8, color: "#666" },
-  activeTab: { color: "#FF6600", borderBottomWidth: 2, borderBottomColor: "#FF6600" },
+  activeTab: { color: "#33691E", borderBottomWidth: 2, borderBottomColor: "#FF6600" },
   inputBox: {
     flexDirection: "row",
     alignItems: "center",
@@ -65,6 +65,6 @@ const styles = StyleSheet.create({
   locationText: { marginLeft: 8, fontSize: 16 },
   savedTitle: { fontSize: 16, fontWeight: "bold", marginBottom: 8 },
   addBtn: { flexDirection: "row", alignItems: "center" },
-  addText: { marginLeft: 6, color: "#FF6600", fontSize: 16 },
+  addText: { marginLeft: 6, color: "#33691E", fontSize: 16 },
   subText: { color: "gray", marginLeft: 32 },
 });

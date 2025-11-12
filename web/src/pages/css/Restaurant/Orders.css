@@ -1,0 +1,151 @@
+/* vùng trang */
+.rest-orders-page {
+  padding: 18px 20px 40px;
+}
+
+/* thanh filter trên cùng */
+.rest-filter-bar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.fbtn {
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: 0.12s;
+}
+.fbtn:hover {
+  background: #f3f4f6;
+}
+.fbtn.active {
+  background: #ff7a1a;
+  border-color: #ff7a1a;
+  color: #fff;
+}
+
+/* bảng giống bên menu */
+.rest-orders-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 12px 12px 0 0;
+  overflow: hidden;
+}
+
+.rest-orders-table thead th {
+  background: #000;
+  color: #fff;
+  text-align: left;
+  padding: 10px 12px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.rest-orders-table tbody td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #f3f4f6;
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+.rest-orders-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* link mã đơn */
+.order-link {
+  color: #0f766e;
+  text-decoration: none;
+  font-weight: 600;
+}
+.order-link:hover {
+  text-decoration: underline;
+}
+
+/* badge trạng thái */
+.order-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.badge-pending {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.badge-preparing {
+  background: #ffedd5;
+  color: #c05621;
+}
+.badge-delivering {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+.badge-done {
+  background: #dcfce7;
+  color: #166534;
+}
+.badge-cancelled {
+  background: #e5e7eb;
+  color: #374151;
+}
+.badge-unknown {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+/* pagination giống bên quản lý món ăn */
+.rest-orders-pagination {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  padding: 12px 10px 4px;
+  background: #fff;
+  border-radius: 0 0 12px 12px;
+  border-top: 1px solid #f3f4f6;
+}
+
+.rest-orders-pagination button {
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.1s;
+}
+
+.rest-orders-pagination button:hover {
+  background: #f3f4f6;
+}
+
+.rest-orders-pagination button.active {
+  background: #ff7a1a;
+  border-color: #ff7a1a;
+  color: #fff;
+}
+
+.rest-orders-pagination button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* responsive nhẹ */
+@media (max-width: 720px) {
+  .rest-orders-table thead {
+    font-size: 13px;
+  }
+  .rest-orders-table tbody td {
+    font-size: 13px;
+  }
+}

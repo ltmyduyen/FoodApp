@@ -17,29 +17,24 @@ import { db } from "../../data/FireBase";
 import { Food } from "../../types/food";
 import FoodCard from "../../components/FoodCard";
 
-const categories = ["Tất cả", "Pizza", "Burger", "Drink"];
-
 const MenuScreen: React.FC = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-  // Tất cả món (foods) và món đã lọc để hiển thị
   const [foods, setFoods] = useState<Food[]>([]);
   const [filteredFoods, setFilteredFoods] = useState<Food[]>([]);
 
-  // Chi nhánh & branchFoods
   const [branches, setBranches] = useState<{ id: string; name: string }[]>([]);
-  const [activeBranch, setActiveBranch] = useState<string | undefined>(undefined);
-  const [branchKeys, setBranchKeys] = useState<Set<string>>(new Set()); // chứa id hoặc name món hợp lệ của chi nhánh
+  const [activeBranch, setActiveBranch] = useState<string | undefined>();
+  const [branchKeys, setBranchKeys] = useState<Set<string>>(new Set());
 
-  // Category
   const [activeCategory, setActiveCategory] = useState("Tất cả");
 
-  // Loading
   const [loadingFoods, setLoadingFoods] = useState(true);
   const [loadingBranches, setLoadingBranches] = useState(true);
   const [loadingBranchFoods, setLoadingBranchFoods] = useState(true);
 
-  // ===== Lấy danh sách chi nhánh (realtime)
+  // ===== 🏢 Lấy danh sách chi nhánh
   useEffect(() => {
     const unsub = onSnapshot(collection(db, "branches"), (snap) => {
       const list = snap.docs.map((d) => ({
@@ -47,46 +42,54 @@ const MenuScreen: React.FC = () => {
         name: (d.data() as any).name,
       }));
       setBranches(list);
-      // chọn mặc định chi nhánh đầu tiên nếu chưa có
       if (!activeBranch && list.length > 0) setActiveBranch(list[0].id);
       setLoadingBranches(false);
     });
     return unsub;
   }, []);
 
-  // ===== Lấy tất cả foods (realtime)
+  // ===== 🍔 Lấy danh sách món ăn (ÉP KIỂU number CHO price)
   useEffect(() => {
     const unsub = onSnapshot(collection(db, "foods"), (snap) => {
-      const list: Food[] = snap.docs.map((doc) => ({
-        id: doc.id,
-        ...(doc.data() as Omit<Food, "id">),
-      }));
+      const list: Food[] = snap.docs.map((doc) => {
+        const d = doc.data() as any;
+        return {
+          id: doc.id,
+          name: d.name ?? "",
+          image: d.image ?? "",
+          category: d.category ?? "Khác",
+          description: d.description ?? "",
+          rating: typeof d.rating === "number" ? d.rating : Number(d.rating) || 0,
+          calories:
+            typeof d.calories === "number" ? d.calories : Number(d.calories) || 0,
+          isActive: d.isActive ?? true,
+          // 👇 Quan trọng: đảm bảo là number
+          price: typeof d.price === "number" ? d.price : Number(d.price) || 0,
+        } as Food;
+      });
       setFoods(list);
       setLoadingFoods(false);
     });
     return unsub;
   }, []);
 
-  // ===== Lấy branchFoods theo chi nhánh (realtime)
+  // ===== 🧩 Lấy branchFoods theo chi nhánh
   useEffect(() => {
     if (!activeBranch) return;
+
     setLoadingBranchFoods(true);
+    setBranchKeys(new Set());
+    setFilteredFoods([]);
 
     const unsub = onSnapshot(
       collection(db, `branches/${activeBranch}/branchFoods`),
       (snap) => {
-        // gom các khóa (id hoặc name) của món được bật
         const keys = new Set<string>();
         snap.forEach((d) => {
           const data = d.data() as any;
-          const enabled =
-            data?.isAvailable === true ||
-            data?.isAvailable === "true" ||
-            data?.isAvailable === 1;
-          if (!enabled) return;
-
-          if (data.foodId) keys.add(String(data.foodId));
-          if (data.foodName) keys.add(String(data.foodName));
+          if (data?.isActive === true && data.foodId) {
+            keys.add(String(data.foodId));
+          }
         });
         setBranchKeys(keys);
         setLoadingBranchFoods(false);
@@ -96,26 +99,32 @@ const MenuScreen: React.FC = () => {
     return unsub;
   }, [activeBranch]);
 
-  // ===== Tính danh sách hiển thị cuối cùng
+  // ===== 🔖 Category động (lấy từ DB)
+  const categories = useMemo(() => {
+    const set = new Set<string>(["Tất cả"]);
+    foods.forEach((f) => f.category && set.add(f.category));
+    return Array.from(set);
+  }, [foods]);
+
+  // ===== 🔍 Lọc danh sách món hiển thị
   useEffect(() => {
-    // Khi chưa có foods hoặc chưa có branchKeys thì không lọc vội
     if (loadingFoods || loadingBranches || loadingBranchFoods) return;
 
-    let base = foods;
+    let result = foods;
 
-    if (activeBranch) {
-      // Lọc theo chi nhánh: hỗ trợ match theo id hoặc theo name
-      base = foods.filter(
-        (f) => branchKeys.has(f.id) || branchKeys.has(f.name)
-      );
+    // Lọc theo branchFoods
+    if (activeBranch && branchKeys.size > 0) {
+      result = result.filter((f) => branchKeys.has(f.id));
+    } else {
+      result = [];
     }
 
     // Lọc theo category
     if (activeCategory !== "Tất cả") {
-      base = base.filter((f) => f.category === activeCategory);
+      result = result.filter((f) => f.category === activeCategory);
     }
 
-    setFilteredFoods(base);
+    setFilteredFoods(result);
   }, [
     foods,
     branchKeys,
@@ -139,7 +148,7 @@ const MenuScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* ===== Tabs chi nhánh ===== */}
+      {/* ===== Tabs Chi nhánh ===== */}
       <View style={styles.tabSection}>
         <ScrollView
           horizontal
@@ -168,7 +177,7 @@ const MenuScreen: React.FC = () => {
         </ScrollView>
       </View>
 
-      {/* ===== Tabs category ===== */}
+      {/* ===== Tabs Category (động) ===== */}
       <View style={styles.tabSection}>
         <ScrollView
           horizontal
@@ -214,12 +223,12 @@ const MenuScreen: React.FC = () => {
             onPress={() =>
               navigation.navigate("FoodDetail", {
                 food: item,
-                branchId: activeBranch ?? undefined,                 
-                branchName: branches.find(b => b.id === activeBranch)?.name || undefined,
+                branchId: activeBranch,
+                branchName:
+                  branches.find((b) => b.id === activeBranch)?.name || undefined,
               })
             }
-/>
-
+          />
         )}
         ListEmptyComponent={
           <Text style={{ textAlign: "center", marginTop: 40, color: "#777" }}>
@@ -233,8 +242,9 @@ const MenuScreen: React.FC = () => {
 
 export default MenuScreen;
 
+// ============== STYLES ==============
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff" },
+  container: { flex: 1, backgroundColor: "#CDDC39" },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
 
   tabSection: { marginBottom: 6 },
@@ -249,7 +259,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginRight: 10,
   },
-  activeTab: { backgroundColor: "#F58220" },
+  activeTab: { backgroundColor: "#33691E" },
   tabText: { fontSize: 15, color: "#333", fontWeight: "600" },
   activeTabText: { color: "#fff" },
 });

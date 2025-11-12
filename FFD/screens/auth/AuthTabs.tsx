@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -13,16 +13,25 @@ import { RootStackParamList } from "../../navigation/AppNavigator";
 import { useAuth } from "../../context/AuthContext";
 import { useMessageBox } from "../../context/MessageBoxContext";
 import { db } from "../../data/FireBase";
-import { collection, addDoc, getDocs, query, where, doc, getDoc, setDoc  } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Auth">;
 
 const AuthTabs: React.FC<Props> = ({ route, navigation }) => {
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
-  const { user, setUser } = useAuth();
   const { show } = useMessageBox();
-  const [loginPhone, setLoginPhone] = useState("");
-  const [loginPassword, setLoginPassword] = useState("");  
+  const { login, user } = useAuth();
+
+
+  const [loginIdentifier, setLoginIdentifier] = useState(""); // phone or email
+  const [loginPassword, setLoginPassword] = useState("");
+
   const [registerData, setRegisterData] = useState({
     firstName: "",
     lastName: "",
@@ -38,90 +47,97 @@ const AuthTabs: React.FC<Props> = ({ route, navigation }) => {
     }
   }, [route.params?.initialTab]);
 
-  // ================== 🔐 XỬ LÝ ĐĂNG KÍ ==================
+  // ================== 🧾 XỬ LÝ ĐĂNG KÝ ==================
   const handleRegister = async () => {
-  const { phone, firstName, lastName, email, password, confirmPassword } = registerData;
+    const { phone, firstName, lastName, email, password, confirmPassword } =
+      registerData;
 
-  if (!phone || !firstName || !lastName || !email || !password || !confirmPassword) {
+    if (!phone || !firstName || !lastName || !email || !password || !confirmPassword) {
+      show("Vui lòng nhập đầy đủ thông tin!", "info");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      show("Mật khẩu không trùng khớp!", "error");
+      return;
+    }
+
+    try {
+      // 🔹 Kiểm tra trùng số điện thoại hoặc email
+      const q1 = query(collection(db, "users"), where("phone", "==", phone));
+      const q2 = query(collection(db, "users"), where("email", "==", email));
+      const [snap1, snap2] = await Promise.all([getDocs(q1), getDocs(q2)]);
+
+      if (!snap1.empty || !snap2.empty) {
+        show("Số điện thoại hoặc email đã được đăng ký!", "error");
+        return;
+      }
+
+      // ✅ Tạo user mới trong Firestore
+      await addDoc(collection(db, "users"), {
+        phone,
+        firstName,
+        lastName,
+        email,
+        password,
+        role: "user",
+        isActive: true,
+        status: "approved",
+        createdAt: new Date(),
+      });
+
+      show("🎉 Đăng ký thành công! Vui lòng đăng nhập.", "success");
+      setTimeout(() => setActiveTab("login"), 800);
+    } catch (error) {
+      console.error("🔥 Lỗi đăng ký:", error);
+      show("Đăng ký không thành công!", "error");
+    }
+  };
+
+  // ================== 🔐 XỬ LÝ ĐĂNG NHẬP ==================
+  const handleLogin = async () => {
+  if (!loginIdentifier || !loginPassword) {
     show("Vui lòng nhập đầy đủ thông tin!", "info");
     return;
   }
 
-  if (password !== confirmPassword) {
-    show("Mật khẩu không trùng khớp!", "error");
-    return;
-  }
-
   try {
-    // Kiểm tra trùng số điện thoại
-    const q = query(collection(db, "users"), where("phone", "==", phone));
-    const snapshot = await getDocs(q);
+    const result = await login(loginIdentifier, loginPassword);
 
-    if (!snapshot.empty) {
-      show("Số điện thoại đã được đăng ký!", "error");
+    if (!result || !result.ok) {
+      show(result?.msg || "Sai thông tin đăng nhập!", "error");
       return;
     }
 
-    // ✅ Tạo user mới trong Firestore
-    const newUserRef = await addDoc(collection(db, "users"), {
-      phone,
-      firstName,
-      lastName,
-      email,
-      password,
-      role: "user",
-      createdAt: new Date().toISOString(),
-    });
+    show("Đăng nhập thành công!", "success");
 
-    show("Đăng ký thành công! Hãy đăng nhập.", "success");
-    setActiveTab("login");
+    setTimeout(() => {
+      if (user?.role === "restaurant") {
+        navigation.replace("RestaurantTabs");
+      } else if (user?.role === "admin") {
+        navigation.replace("AdminTabs");
+      } else {
+        navigation.replace("MainTabs");
+      }
+    }, 600);
   } catch (error) {
-    console.error("Lỗi đăng ký:", error);
-    show("Đăng ký không thành công!", "error");
+    console.error("🔥 Lỗi đăng nhập:", error);
+    show("Không thể đăng nhập. Vui lòng thử lại!", "error");
   }
 };
 
-// ================== ĐĂNG NHẬP ==================
-const handleLogin = async () => {
-  if (!loginPhone || !loginPassword) {
-    show("Vui lòng nhập đầy đủ số điện thoại và mật khẩu!", "info");
-    return;
-  }
-
-  try {
-    const q = query(
-      collection(db, "users"),
-      where("phone", "==", loginPhone),
-      where("password", "==", loginPassword)
-    );
-    const querySnapshot = await getDocs(q);
-
-    if (!querySnapshot.empty) {
-      const docSnap = querySnapshot.docs[0];
-      const userData = { id: docSnap.id, ...(docSnap.data() as any) };
-
-      // ✅ Lưu user vào Context
-      setUser(userData);
-
-      // ❌ Không cần navigate, AppNavigator sẽ tự vào đúng trang
-      show(`Đăng nhập thành công (${userData.role})!`, "success");
-    } else {
-      show("Số điện thoại hoặc mật khẩu không đúng!", "error");
-    }
-  } catch (error) {
-    console.error("Lỗi đăng nhập:", error);
-    show("Không thể đăng nhập!", "error");
-  }
-};
   // ================== GIAO DIỆN ==================
   return (
     <SafeAreaView style={styles.container}>
+      {/* Tabs */}
       <View style={styles.tabContainer}>
         <TouchableOpacity
           style={[styles.tab, activeTab === "login" && styles.tabActive]}
           onPress={() => setActiveTab("login")}
         >
-          <Text style={[styles.tabText, activeTab === "login" && styles.tabTextActive]}>
+          <Text
+            style={[styles.tabText, activeTab === "login" && styles.tabTextActive]}
+          >
             Đăng nhập
           </Text>
         </TouchableOpacity>
@@ -130,7 +146,9 @@ const handleLogin = async () => {
           style={[styles.tab, activeTab === "register" && styles.tabActive]}
           onPress={() => setActiveTab("register")}
         >
-          <Text style={[styles.tabText, activeTab === "register" && styles.tabTextActive]}>
+          <Text
+            style={[styles.tabText, activeTab === "register" && styles.tabTextActive]}
+          >
             Đăng ký
           </Text>
         </TouchableOpacity>
@@ -139,12 +157,12 @@ const handleLogin = async () => {
       {/* ========== ĐĂNG NHẬP ========== */}
       {activeTab === "login" && (
         <View style={styles.form}>
-          <Text style={styles.label}>Số điện thoại</Text>
+          <Text style={styles.label}>Số điện thoại hoặc Email</Text>
           <TextInput
             style={styles.input}
-            placeholder="Nhập số điện thoại"
-            value={loginPhone}
-            onChangeText={setLoginPhone}
+            placeholder="Nhập số điện thoại hoặc email"
+            value={loginIdentifier}
+            onChangeText={setLoginIdentifier}
           />
 
           <Text style={styles.label}>Mật khẩu</Text>
@@ -155,6 +173,7 @@ const handleLogin = async () => {
             value={loginPassword}
             onChangeText={setLoginPassword}
           />
+
           <TouchableOpacity style={styles.button} onPress={handleLogin}>
             <Text style={styles.buttonText}>Đăng nhập</Text>
           </TouchableOpacity>
@@ -164,20 +183,20 @@ const handleLogin = async () => {
       {/* ========== ĐĂNG KÝ ========== */}
       {activeTab === "register" && (
         <View style={styles.form}>
-          <Text style={styles.label}>Tên</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Tên của bạn"
-            value={registerData.firstName}
-            onChangeText={(text) => setRegisterData({ ...registerData, firstName: text })}
-          />
-
           <Text style={styles.label}>Họ</Text>
           <TextInput
             style={styles.input}
-            placeholder="Họ của bạn"
+            placeholder="Nhập họ của bạn"
             value={registerData.lastName}
-            onChangeText={(text) => setRegisterData({ ...registerData, lastName: text })}
+            onChangeText={(t) => setRegisterData({ ...registerData, lastName: t })}
+          />
+
+          <Text style={styles.label}>Tên</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Nhập tên của bạn"
+            value={registerData.firstName}
+            onChangeText={(t) => setRegisterData({ ...registerData, firstName: t })}
           />
 
           <Text style={styles.label}>Số điện thoại</Text>
@@ -186,7 +205,7 @@ const handleLogin = async () => {
             placeholder="Nhập số điện thoại"
             keyboardType="phone-pad"
             value={registerData.phone}
-            onChangeText={(text) => setRegisterData({ ...registerData, phone: text })}
+            onChangeText={(t) => setRegisterData({ ...registerData, phone: t })}
           />
 
           <Text style={styles.label}>Email</Text>
@@ -195,7 +214,7 @@ const handleLogin = async () => {
             placeholder="Nhập email"
             keyboardType="email-address"
             value={registerData.email}
-            onChangeText={(text) => setRegisterData({ ...registerData, email: text })}
+            onChangeText={(t) => setRegisterData({ ...registerData, email: t })}
           />
 
           <Text style={styles.label}>Mật khẩu</Text>
@@ -204,7 +223,7 @@ const handleLogin = async () => {
             placeholder="Nhập mật khẩu"
             secureTextEntry
             value={registerData.password}
-            onChangeText={(text) => setRegisterData({ ...registerData, password: text })}
+            onChangeText={(t) => setRegisterData({ ...registerData, password: t })}
           />
 
           <Text style={styles.label}>Xác nhận mật khẩu</Text>
@@ -213,8 +232,8 @@ const handleLogin = async () => {
             placeholder="Nhập lại mật khẩu"
             secureTextEntry
             value={registerData.confirmPassword}
-            onChangeText={(text) =>
-              setRegisterData({ ...registerData, confirmPassword: text })
+            onChangeText={(t) =>
+              setRegisterData({ ...registerData, confirmPassword: t })
             }
           />
 
@@ -239,11 +258,11 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderBottomColor: "#eee",
   },
-  tabActive: { borderBottomColor: "#F58220" },
+  tabActive: { borderBottomColor: "#CDDC39" },
   tabText: { fontSize: 16, fontWeight: "600", color: "#555" },
-  tabTextActive: { color: "#F58220", fontWeight: "bold" },
+  tabTextActive: { color: "black", fontWeight: "bold" },
   form: { padding: 20 },
-  label: { color: "#F58220", fontWeight: "bold", marginTop: 10 },
+  label: { color: "black", fontWeight: "bold", marginTop: 10 },
   input: {
     borderWidth: 1,
     borderColor: "#ddd",
@@ -252,7 +271,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   button: {
-    backgroundColor: "#F58220",
+    backgroundColor: "#33691E",
     marginTop: 20,
     padding: 15,
     borderRadius: 30,
