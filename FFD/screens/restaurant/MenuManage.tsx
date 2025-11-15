@@ -241,7 +241,7 @@ export default MenuManage;
 
 /* 🎨 Styles */
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#CDDC39" },
+  container: { flex: 1, backgroundColor: "white " },
   header: {
     backgroundColor: "#CDDC39",
     flexDirection: "row",
@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     borderRadius: 8,
-    backgroundColor: "#F57C00",
+    backgroundColor: "#f5f5f5",
   },
   name: { fontWeight: "bold", fontSize: 15, color: "#333" },
   emptyBox: { flex: 1, justifyContent: "center", alignItems: "center" },

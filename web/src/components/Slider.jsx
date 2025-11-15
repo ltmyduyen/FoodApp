@@ -4,10 +4,10 @@ import "./css/Slider.css";
 
 // 🎯 dùng ảnh trong public
 const LOCAL_SLIDES = [
-  { src: "/slider/slider1.png", alt: "Slider 1" },
-  { src: "/slider/slider2.png", alt: "Slider 2" },
-  { src: "/slider/slider3.png", alt: "Slider 3" },
-  { src: "/slider/slider4.png", alt: "Slider 4" },
+  { src: "/slider/slide1.png", alt: "Slider 1" },
+  { src: "/slider/slide2.png", alt: "Slider 2" },
+  { src: "/slider/slide3.png", alt: "Slider 3" },
+  { src: "/slider/slide4.png", alt: "Slider 4" },
 ];
 
 export default function Slider({ autoplay = 4000 }) {
