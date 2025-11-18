@@ -1,9 +1,10 @@
 /* ===== PAGE WRAP ===== */
 .rod-wrap {
-  min-height: 100vh;
-  padding: 0 clamp(14px, 3vw, 24px) 40px;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  color: #111827;
+   min-height: 100vh;
+  padding: 24px 24px 40px;
+  box-sizing: border-box;
+  background: linear-gradient(135deg, #fef9c3, #fde68a, #fed7aa);
+  background: linear-gradient(135deg, #fef9c3, #fde68a, #fed7aa);
 }
 
 /* ===== TOP BAR ===== */
@@ -18,12 +19,13 @@
 .rod-left {
   display: flex;
   gap: 14px;
-  align-items: center;
+  align-items: flex-start;
 }
 
+/* nút quay lại */
 .rod-back {
-  background: #fff;
-  border: 1px solid rgba(15, 23, 42, 0.05);
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.06);
   border-radius: 999px;
   padding: 6px 14px;
   cursor: pointer;
@@ -32,21 +34,22 @@
   gap: 6px;
   align-items: center;
   transition: 0.12s;
+  font-size: 13px;
 }
 .rod-back:hover {
   background: #f3f4f6;
 }
 
 .rod-title {
-  font-size: 20px;
+  font-size: 21px;
   font-weight: 700;
-padding: 10px;}
+  margin: 0 0 4px;
+}
 
 .rod-sub {
   margin: 0;
   font-size: 13px;
   color: #6b7280;
-  padding-left: 10px;
 }
 
 /* ===== ACTIONS ===== */
@@ -67,7 +70,7 @@ padding: 10px;}
 .rod-btn--primary {
   background: #ff7a1a;
   color: #fff;
-  box-shadow: 0 10px 20px rgba(255, 122, 26, 0.2);
+  box-shadow: 0 10px 20px rgba(255, 122, 26, 0.25);
 }
 .rod-btn--primary:hover {
   background: #ff6a00;
@@ -118,11 +121,11 @@ padding: 10px;}
 /* ===== CARD / BOX ===== */
 .rod-box {
   background: #fff;
-  border-radius: 14px;
+  border-radius: 16px;
   padding: 14px 16px 14px;
   margin-bottom: 14px;
-  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
-  border: 1px solid rgba(148, 163, 184, 0.12);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(148, 163, 184, 0.25);
 }
 
 .rod-box-title {
@@ -132,6 +135,14 @@ padding: 10px;}
   display: flex;
   gap: 6px;
   align-items: center;
+}
+
+/* layout 2 cột: thông tin + tổng tiền */
+.rod-main-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.2fr);
+  gap: 14px;
+  margin-bottom: 14px;
 }
 
 /* ===== INFO GRID ===== */
@@ -197,7 +208,6 @@ padding: 10px;}
 
 /* ===== TOTAL BOX ===== */
 .rod-totalbox {
-  max-width: 360px;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -224,11 +234,15 @@ padding: 10px;}
   .rod-actions {
     margin-top: 6px;
   }
+  .rod-main-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 640px) {
   .rod-wrap {
     padding-inline: 10px;
+    padding-top: 14px;
   }
   .rod-box {
     padding-inline: 12px;

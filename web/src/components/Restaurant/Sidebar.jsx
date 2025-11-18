@@ -11,34 +11,29 @@ export default function RestaurantSidebar() {
   const [pendingCount, setPendingCount] = useState(0);
 
   const displayName =
-    [user?.firstName, user?.lastName].filter(Boolean).join(" ") ||    "Nhà hàng";
+    [user?.firstName, user?.lastName].filter(Boolean).join(" ") || "Nhà hàng";
 
-  // lắng nghe đơn của chi nhánh này
+  const branchId = user?.branchId || user?.restaurantBranchId || "—";
+
+  // Lắng nghe đơn đang chờ
   useEffect(() => {
-    if (!user?.id) return;
-    const branchId = user?.branchId || user?.restaurantBranchId;
     if (!branchId) return;
 
-    // để đỡ phải tạo index: chỉ filter branch, còn status lọc ở client
-    const q = query(
-      collection(db, "orders"),
-      where("branchId", "==", branchId)
-    );
+    const q = query(collection(db, "orders"), where("branchId", "==", branchId));
 
     const unsub = onSnapshot(q, (snap) => {
       let count = 0;
       snap.forEach((doc) => {
         const data = doc.data();
-        // checkout của bạn lưu là "processing"
         if (data.status === "processing" || data.status === "pending") {
-          count += 1;
+          count++;
         }
       });
       setPendingCount(count);
     });
 
     return () => unsub();
-  }, [user]);
+  }, [branchId]);
 
   const handleLogout = async () => {
     try {
@@ -49,50 +44,54 @@ export default function RestaurantSidebar() {
   };
 
   return (
-    <aside className="rest-sidebar">
-      <div className="rest-brand">
-        <div className="rest-brand-circle">🍔</div>
-        <div className="rest-brand-text">
-          <div className="rest-brand-name">{displayName}</div>
+    <header className="rest-topbar">
+      {/* Logo + brand */}
+      <div className="rest-top-brand">
+        <div className="rest-top-icon">🍽️</div>
+        <div>
+          <div className="rest-top-name">{displayName}</div>
+          <div className="rest-top-branch">Chi nhánh {branchId}</div>
         </div>
       </div>
 
-      <nav className="rest-nav">
+      {/* Navigation */}
+      <nav className="rest-top-nav">
         <NavLink
           to="/restaurant"
           end
           className={({ isActive }) =>
-            isActive ? "rest-link active" : "rest-link"
+            isActive ? "rest-top-link active" : "rest-top-link"
           }
         >
-          Dashboard
+          📊 Dashboard
         </NavLink>
 
         <NavLink
           to="/restaurant/orders"
           className={({ isActive }) =>
-            isActive ? "rest-link active" : "rest-link"
+            isActive ? "rest-top-link active" : "rest-top-link"
           }
         >
-          Quản lý đơn hàng
+          🧾 Đơn hàng
           {pendingCount > 0 && (
-            <span className="rest-badge">{pendingCount}</span>
+            <span className="rest-top-badge">{pendingCount}</span>
           )}
         </NavLink>
 
         <NavLink
           to="/restaurant/menu"
           className={({ isActive }) =>
-            isActive ? "rest-link active" : "rest-link"
+            isActive ? "rest-top-link active" : "rest-top-link"
           }
         >
-          Quản lý món ăn
+          🍕 Món ăn
         </NavLink>
       </nav>
 
-      <button type="button" className="rest-logout" onClick={handleLogout}>
+      {/* Logout */}
+      <button className="rest-top-logout" onClick={handleLogout}>
         Đăng xuất
       </button>
-    </aside>
+    </header>
   );
 }

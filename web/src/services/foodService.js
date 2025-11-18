@@ -21,7 +21,8 @@ const getAllActiveFoodsMap = async () => {
     const data = d.data();
     // nếu không có isActive thì xem như active
     if (data.isActive !== false) {
-      activeMap.set(d.id, { id: d.id, ...data });
+      // key = docId (F01, F02, ...), bên trong vẫn giữ slug id trong data
+      activeMap.set(d.id, { docId: d.id, ...data });
     }
   });
 
@@ -39,7 +40,7 @@ export const getBranchActiveFoodIds = async (branchId) => {
     collection(db, "branches", branchId, "branchFoods")
   );
 
-  // danh sách id mà chi nhánh "muốn" bán
+  // danh sách id mà chi nhánh "muốn" bán (id này là docId của foods)
   const branchFoodIds = snap.docs
     .filter((d) => d.data().isActive !== false) // true hoặc undefined thì coi là bật
     .map((d) => d.data().foodId || d.id);
@@ -63,17 +64,18 @@ export const getAllFoods = async () => {
   const snap = await getDocs(collection(db, "foods"));
   return snap.docs
     .map((d) => ({
-      id: d.id,
-      ...d.data(),
+      docId: d.id,     // docId = F01, F02 ...
+      ...d.data(),     // bên trong có field id = "com-bo-vien-xot-ca-chua"
     }))
-    .filter((f) => f.isActive !== false); // lọc ở đây luôn
+    .filter((f) => f.isActive !== false);
 };
 
 /**
- * Lấy 1 món theo id
+ * Lấy 1 món theo docId (F01, F02 ...)
+ * Hàm này các chỗ khác có thể vẫn dùng → để nguyên theo docId
  */
-export const getFoodById = async (id) => {
-  const ref = doc(db, "foods", id);
+export const getFoodById = async (docId) => {
+  const ref = doc(db, "foods", docId);
   const snap = await getDoc(ref);
   if (!snap.exists()) return null;
 
@@ -83,7 +85,7 @@ export const getFoodById = async (id) => {
     return null;
   }
 
-  return { id: snap.id, ...data };
+  return { docId: snap.id, ...data };
 };
 
 /**
@@ -95,7 +97,10 @@ export const getFoodsByCategory = async (cat) => {
   const q = query(collection(db, "foods"), where("category", "==", cat));
   const snap = await getDocs(q);
   return snap.docs
-    .map((d) => ({ id: d.id, ...d.data() }))
+    .map((d) => ({
+      docId: d.id,     // docId nội bộ
+      ...d.data(),     // giữ slug id trong data
+    }))
     .filter((f) => f.isActive !== false);
 };
 
@@ -108,7 +113,7 @@ export const getFoodsByCategoryForBranch = async (branchId, cat) => {
     throw new Error("branchId is required");
   }
 
-  // 1. lấy list id món chi nhánh đang bán (đã lọc bởi foods active)
+  // 1. lấy list docId món chi nhánh đang bán (đã lọc bởi foods active)
   const activeIds = await getBranchActiveFoodIds(branchId);
   if (activeIds.length === 0) return [];
 
@@ -116,11 +121,14 @@ export const getFoodsByCategoryForBranch = async (branchId, cat) => {
   const q = query(collection(db, "foods"), where("category", "==", cat));
   const snap = await getDocs(q);
   const all = snap.docs
-    .map((d) => ({ id: d.id, ...d.data() }))
+    .map((d) => ({
+      docId: d.id,
+      ...d.data(),
+    }))
     .filter((f) => f.isActive !== false);
 
-  // 3. filter lại theo danh sách của chi nhánh
-  return all.filter((f) => activeIds.includes(f.id));
+  // 3. filter lại theo danh sách của chi nhánh (so với docId)
+  return all.filter((f) => activeIds.includes(f.docId));
 };
 
 /**
@@ -132,7 +140,7 @@ export const getFoodsForBranch = async (branchId) => {
     throw new Error("branchId is required");
   }
 
-  // danh sách id món mà chi nhánh có bật (đã lọc bởi foods active)
+  // danh sách docId món mà chi nhánh có bật (đã lọc bởi foods active)
   const activeIds = await getBranchActiveFoodIds(branchId);
   if (activeIds.length === 0) return [];
 

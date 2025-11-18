@@ -6,48 +6,49 @@ export default function ProductCard({ product, onAdd }) {
   const navigate = useNavigate();
   if (!product) return null;
 
+  // ====== Lấy tên ======
   const name =
-    product.name ??
-    product.title ??
+    product.name ||
+    product.title ||
     "Sản phẩm";
 
+  // ====== Lấy giá ======
   const rawPrice =
     product.price ??
     (Array.isArray(product.sizes) && product.sizes[0]
       ? product.sizes[0].price
       : 0);
 
-  const priceNumber =
-    typeof rawPrice === "string" ? Number(rawPrice) : Number(rawPrice || 0);
+  const priceNumber = Number(rawPrice) || 0;
 
+  // ====== Lấy ảnh ======
   const rawImg =
-    product.thumbnail ??
-    product.image ??
-    product.img ??
+    product.image ||
+    product.thumbnail ||
+    product.img ||
     (Array.isArray(product.images) ? product.images[0] : null);
 
   const imgSrc = rawImg
     ? (String(rawImg).startsWith("http")
-        ? String(rawImg)
-        : (String(rawImg).startsWith("/") ? String(rawImg) : `/${String(rawImg)}`))
+        ? rawImg
+        : "/" + rawImg)
     : "https://via.placeholder.com/500?text=No+Image";
 
-  // lấy id để đi tới detail
+  // ====== Lấy ID để chuyển qua trang chi tiết ======
   const id =
-    product.id ??
-    product.productId ??
-    product.docId ??
-    product.key ??
+    product.id ||
+    product.code ||
+    product.productId ||
+    product.docId ||
     null;
 
   const handleCardClick = () => {
     if (!id) return;
-    navigate(`/product/${id}`);
+    navigate(`/product/${id}`);   // 👈 chuyển qua ProductDetail
   };
 
   const handleAdd = (e) => {
-    // chặn click lan ra card
-    e.stopPropagation();
+    e.stopPropagation();          // không cho bubble lên card
     onAdd?.(product);
   };
 
@@ -64,27 +65,24 @@ export default function ProductCard({ product, onAdd }) {
           alt={name}
           loading="lazy"
           onError={(e) => {
-            e.currentTarget.src = "https://via.placeholder.com/500?text=No+Image";
+            e.currentTarget.src =
+              "https://via.placeholder.com/500?text=No+Image";
           }}
         />
       </div>
 
-      <h3 className="product-card__title" title={name}>
-        {name}
-      </h3>
+      <h3 className="product-card__title">{name}</h3>
 
       <button
         className="product-card__add"
-        onClick={handleAdd}
-        aria-label={`Thêm ${name} vào giỏ`}
         type="button"
+        onClick={handleAdd}
       >
-        <FiPlus size={22} aria-hidden="true" />
+        <FiPlus size={22} />
       </button>
 
       <div className="product-card__price">
-        {priceNumber > 0 ? priceNumber.toLocaleString("vi-VN") : "—"}{" "}
-        <span className="currency">vnđ</span>
+        {priceNumber.toLocaleString("vi-VN")} <span>vnđ</span>
       </div>
     </article>
   );

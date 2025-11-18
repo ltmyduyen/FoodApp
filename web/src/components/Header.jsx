@@ -112,35 +112,7 @@ export default function Header({ cartCount = 0 }) {
             <img src="/static/common/Kinget.png" alt="Kinget" />
           </Link>
 
-          <ul className="ff-menu">
-            <li>
-              <NavLink to="/" end>
-                Trang chủ
-              </NavLink>
-            </li>
-            <li
-              className={`ff-has-dd ${openCats ? "open" : ""}`}
-              ref={catsRef}
-            >
-              <button
-                type="button"
-                className="ff-menu-link"
-                onClick={() => setOpenCats((v) => !v)}
-              >
-                Thực đơn
-              </button>
-              <div className="ff-dropdown" role="menu" aria-label="Thực đơn">
-                <div className="ff-cat-grid">
-                  {CATEGORIES.map((c) => (
-                    <NavLink key={c.to} to={c.to} className="ff-cat">
-                      <img src={c.img} alt="" />
-                      <span>{c.label}</span>
-                    </NavLink>
-                  ))}
-                </div>
-              </div>
-            </li>
-          </ul>
+    
 
           <div className="ff-right">
             {/* CHI NHÁNH */}

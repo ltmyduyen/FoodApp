@@ -3,7 +3,7 @@ import { createBrowserRouter } from "react-router-dom";
 import UserLayout from "../layouts/UserLayout";
 import AdminLayout from "../layouts/AdminLayout";
 import RestaurantLayout from "../layouts/RestaurantLayout";
-
+import AllProductsPage from "../pages/AllProducts";
 //User pages
 import Home from "../pages/Home";
 import LoginPage from "../pages/LoginPage.jsx";
@@ -36,6 +36,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
         { path: "login", element: <LoginPage /> },
+            { path: "products", element: <AllProductsPage /> },
         { path: "category/:slug", element: <Category /> },
         {path: "product/:id", element: <ProductDetailPage /> },
         {path: "cart", element: <CartPage /> },
@@ -69,4 +70,5 @@ export const router = createBrowserRouter([
       {path: "drones", element: <AdminDrones /> },
     ],
   },
+  
 ]);

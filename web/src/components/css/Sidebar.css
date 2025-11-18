@@ -1,280 +1,152 @@
-/* ===== VỎ SIDEBAR ===== */
-.rest-sidebar {
-  width: 230px;
-  background: #ff7a1a; /* cam chủ đạo */
-  color: #fff;
-  padding: 18px 14px;
+/* ===================== */
+/*  LAYOUT RESTAURANT    */
+/* ===================== */
+
+/* Vỏ bọc layout ngoài cùng của khu restaurant
+   -> dùng trong RestaurantLayout / RestaurantShell */
+.rest-shell {
   min-height: 100vh;
-  box-shadow: 0 10px 25px rgba(255, 122, 26, 0.25);
   display: flex;
-  flex-direction: column;
-  gap: 18px;
+  flex-direction: column;              /* 🔥 Header trên – content dưới */
+  background: #fef9c3;                 /* nền vàng nhạt, có thể để gradient nếu muốn */
+  background: linear-gradient(135deg, #fef9c3, #fde68a, #fed7aa);
 }
 
-/* ===== BRAND / TÊN NHÀ HÀNG ===== */
-.rest-brand {
+/* Khu vực nội dung phía dưới thanh topbar */
+.rest-main {
+  flex: 1;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 16px 18px 28px;             /* giống mấy page admin/restaurant kia */
+}
+
+/* (Nếu trước đây có .rest-sidebar, .adm-shell, .adm-sidebar,... thì xoá hết,
+   tránh bị width 230px làm lệch layout) */
+
+
+/* ===================== */
+/*  TOP NAV HORIZONTAL   */
+/* ===================== */
+
+.rest-topbar {
+  width: 100%;
+  height: 70px;
+  background: linear-gradient(90deg, #ffb74d, #ff7a1a);
   display: flex;
-  gap: 10px;
   align-items: center;
-  margin-bottom: 4px;
+  padding: 0 22px;
+  box-sizing: border-box;
+  box-shadow: 0 4px 14px rgba(255, 122, 26, 0.35);
+  gap: 26px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
 }
 
-.rest-brand-circle {
-  width: 40px;
-  height: 40px;
-  background: rgba(255, 255, 255, 0.2);
+/* Left brand */
+.rest-top-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rest-top-icon {
+  width: 42px;
+  height: 42px;
+  background: rgba(255, 255, 255, 0.22);
   border-radius: 999px;
   display: grid;
   place-items: center;
-  font-size: 18px;
+  font-size: 20px;
 }
 
-.rest-brand-text {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.1;
-}
-
-.rest-brand-name {
-  font-size: 1.15rem;
+.rest-top-name {
+  font-size: 15px;
   font-weight: 700;
-  letter-spacing: 0.01em;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  color: #fff;
+  margin-bottom: 2px;
 }
 
-.rest-brand-sub {
-  font-size: 0.7rem;
-  opacity: 0.9;
+.rest-top-branch {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.85);
 }
 
-/* ===== MENU ===== */
-.rest-nav {
+/* Navigation */
+.rest-top-nav {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-top: 6px;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
 }
 
-/* link thường */
-.rest-link {
-  position: relative; /* để đặt badge */
-  display: block;
-  background: rgba(255, 255, 255, 0);
+.rest-top-link {
+  position: relative;
   color: #fff;
   text-decoration: none;
-  padding: 8px 10px;
-  border-radius: 10px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  transition: 0.12s ease-out;
   font-size: 0.9rem;
-  transition: all 0.12s ease-out;
+  font-weight: 500;
 }
 
-/* hover */
-.rest-link:hover {
-  background: rgba(255, 255, 255, 0.15);
+.rest-top-link:hover {
+  background: rgba(255, 255, 255, 0.18);
 }
 
-/* link active */
-.rest-link.active {
+.rest-top-link.active {
   background: #fff;
   color: #ff7a1a;
   font-weight: 600;
-  box-shadow: 0 6px 12px rgba(255, 122, 26, 0.35);
 }
 
-/* ===== BADGE SỐ ĐƠN CHỜ ===== */
-.rest-badge {
-  position: absolute;
-  top: 6px;
-  right: 14px;
+/* badge số đơn đang chờ */
+.rest-top-badge {
   background: #ef4444;
   color: #fff;
+  padding: 2px 7px;
+  border-radius: 999px;
   font-size: 11px;
-  min-width: 20px;
-  height: 20px;
-  border-radius: 999px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 6px;
-  font-weight: 600;
-}
-
-/* ===== NÚT ĐĂNG XUẤT ===== */
-.rest-logout {
-  margin-top: auto; /* đẩy xuống cuối */
-  background: rgba(255, 255, 255, 0.2);
-  border: 0;
-  color: #fff;
-  padding: 8px 10px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: 0.12s ease-out;
-}
-
-.rest-logout:hover {
-  background: rgba(255, 255, 255, 0.35);
-}
-
-/* ===== MOBILE ===== */
-@media (max-width: 768px) {
-  .rest-sidebar {
-    width: 100%;
-    min-height: auto;
-    flex-direction: row;
-    align-items: center;
-  }
-
-  .rest-brand {
-    margin-bottom: 0;
-    margin-right: 12px;
-  }
-
-  .rest-nav {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 6px;
-    flex: 1;
-  }
-
-  .rest-link {
-    padding: 6px 10px;
-  }
-
-  .rest-logout {
-    margin-top: 0;
-    margin-left: 8px;
-  }
-}
-.adm-shell {
-  display: flex;
-  min-height: 100vh;
-  background: #edf0f5;
-}
-
-.adm-sidebar {
-  width: 230px;
-  background: #111827;
-  color: #fff;
-  padding: 16px 14px 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.adm-brand {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.adm-brand-circle {
-  width: 38px;
-  height: 38px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  display: grid;
-  place-items: center;
-  font-size: 18px;
-}
-
-.adm-brand-text {
-  line-height: 1.05;
-}
-.adm-brand-name {
+  margin-left: 6px;
   font-weight: 700;
 }
-.adm-brand-sub {
-  font-size: 11px;
-  opacity: 0.8;
-}
 
-.adm-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  flex: 1;
-  margin-top: 4px;
-}
-
-.adm-link {
-  display: block;
-  padding: 7px 10px;
-  border-radius: 10px;
-  color: #fff;
-  text-decoration: none;
-  font-size: 14px;
-  transition: 0.12s;
-}
-
-.adm-link:hover {
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.adm-link.active {
-  background: #fff;
-  color: #111827;
-  font-weight: 600;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
-}
-
-.adm-bottom {
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  padding-top: 10px;
-}
-
-.adm-user-name {
-  font-size: 12px;
-  margin-bottom: 6px;
-  opacity: 0.9;
-}
-
-.adm-logout {
-  background: rgba(255, 255, 255, 0.09);
+/* logout */
+.rest-top-logout {
+  background: rgba(255, 255, 255, 0.28);
   border: none;
-  border-radius: 6px;
-  padding: 5px 10px;
-  color: #fff;
+  padding: 8px 14px;
+  border-radius: 14px;
   cursor: pointer;
-  font-size: 13px;
-}
-.adm-logout:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.adm-main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
+  font-weight: 600;
+  color: #fff;
+  transition: 0.15s;
 }
 
-.adm-topbar {
-  background: #fff;
-  border-bottom: 1px solid #e5e7eb;
-  padding: 12px 18px;
+.rest-top-logout:hover {
+  background: rgba(255, 255, 255, 0.4);
 }
 
-.adm-top-title {
-  font-size: 18px;
-  margin: 0;
-}
 
-.adm-content {
-  padding: 16px 18px 28px;
-}
+/* ===================== */
+/*        MOBILE         */
+/* ===================== */
 
-@media (max-width: 880px) {
-  .adm-sidebar {
-    width: 66px;
-    align-items: center;
+@media (max-width: 780px) {
+  .rest-topbar {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 10px 16px;
+    gap: 10px;
   }
-  .adm-brand-text,
-  .adm-bottom {
-    display: none;
+
+  .rest-top-nav {
+    width: 100%;
+    justify-content: space-between;
   }
-  .adm-link {
-    text-align: center;
-    width: 40px;
-    padding-inline: 0;
+
+  .rest-main {
+    padding: 12px 10px 20px;
   }
 }

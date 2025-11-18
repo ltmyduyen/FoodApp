@@ -1,14 +1,20 @@
 // src/pages/Category.jsx
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import ProductList from "../components/ProductList";
+
+import ProductList from "../components/ProductList.jsx";
+import CategorySidebar from "./CategorySidebar.jsx";
+import SortBar from "./SortBar.jsx";
+
 import {
   getFoodsByCategory,
   getFoodsByCategoryForBranch,
-} from "../services/foodService"; // 👈 import thêm getFoodsByCategory
+} from "../services/foodService.js";
+
+import "./css/Category.css";
 
 const CAT_MAP = {
-  pizza: { name: "Pizza" },
+  pizz: { name: "Pizza" },
   burger: { name: "Burger" },
   drink: { name: "Drink" },
 };
@@ -16,10 +22,15 @@ const CAT_MAP = {
 export default function Category() {
   const { slug } = useParams();
   const cat = CAT_MAP[slug];
+
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [sortType, setSortType] = useState("popular"); // Phổ biến / Mới nhất / Bán chạy / Giá
 
-  if (!cat) return <div style={{ padding: 16 }}>Danh mục không tồn tại.</div>;
+  // slug không hợp lệ
+  if (!cat) {
+    return <div style={{ padding: 16 }}>Danh mục không tồn tại.</div>;
+  }
 
   useEffect(() => {
     let stop = false;
@@ -27,48 +38,72 @@ export default function Category() {
     async function load() {
       setLoading(true);
 
-      // lấy user và chi nhánh (nếu có)
       const userStr = localStorage.getItem("user");
       const hasUser = !!userStr;
       const branchId = localStorage.getItem("selectedBranchId");
 
       try {
-        // TH1: không đăng nhập -> lấy tất cả món theo category
-        if (!hasUser) {
-          const data = await getFoodsByCategory(cat.name);
-          if (!stop) setItems(data);
-          return;
+        let data = [];
+
+        // không đăng nhập hoặc chưa chọn chi nhánh -> lấy tất cả theo category
+        if (!hasUser || !branchId) {
+          data = await getFoodsByCategory(cat.name);
+        } else {
+          // có user + có chi nhánh -> lọc theo chi nhánh
+          data = await getFoodsByCategoryForBranch(branchId, cat.name);
         }
 
-        // TH2: có đăng nhập mà chưa chọn chi nhánh -> cũng lấy tất cả
-        if (!branchId) {
-          const data = await getFoodsByCategory(cat.name);
-          if (!stop) setItems(data);
-          return;
-        }
-
-        // TH3: có đăng nhập + có chi nhánh -> lọc theo chi nhánh
-        const data = await getFoodsByCategoryForBranch(branchId, cat.name);
         if (!stop) setItems(data);
       } finally {
-          if (!stop) setLoading(false);
+        if (!stop) setLoading(false);
       }
     }
 
     load();
+
     return () => {
       stop = true;
     };
   }, [slug, cat.name]);
 
+  // sắp xếp theo sortType
+  const sortedItems = [...items].sort((a, b) => {
+    switch (sortType) {
+      case "new":
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      case "best":
+        return (b.sold ?? 0) - (a.sold ?? 0);
+      case "price":
+        return (a.price ?? 0) - (b.price ?? 0);
+      default:
+        // "popular" => giữ nguyên
+        return 0;
+    }
+  });
+
   return (
-    <section>
-      <h1 style={{ marginBottom: 16, marginLeft: 90 }}>{cat.name}</h1>
-      {loading ? (
-        <ProductList limit={6} />
-      ) : (
-        <ProductList items={items} maxWidth="1180px" />
-      )}
+    <section className="cate-page">
+      <div className="cate-layout">
+        {/* Sidebar bên trái */}
+        <CategorySidebar activeSlug={slug} />
+
+        {/* Nội dung bên phải */}
+        <div className="cate-main">
+          <div className="cate-breadcrumb">
+            Trang chủ &gt; <span>{cat.name}</span>
+          </div>
+
+          <h1 className="cate-title">{cat.name}</h1>
+
+          <SortBar sort={sortType} setSort={setSortType} />
+
+          {loading ? (
+            <ProductList limit={6} maxWidth="1180px" />
+          ) : (
+            <ProductList items={sortedItems} maxWidth="1180px" />
+          )}
+        </div>
+      </div>
     </section>
   );
 }

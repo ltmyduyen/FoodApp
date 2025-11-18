@@ -102,17 +102,23 @@ export default function RestaurantOrderDetail() {
         </button>
       );
       break;
-    // đang giao thì nhà hàng không làm gì nữa
     default:
       actionButtons = null;
   }
 
   return (
     <div className="rod-wrap">
-      {/* top */}
+      {/* TOP BAR */}
       <div className="rod-topbar">
         <div className="rod-left">
-         
+          <button
+            type="button"
+            className="rod-back"
+            onClick={() => navigate(-1)}
+          >
+            ← Quay lại
+          </button>
+
           <div>
             <h1 className="rod-title">
               Đơn hàng: #{order.code || order.id.slice(0, 8)}
@@ -131,32 +137,51 @@ export default function RestaurantOrderDetail() {
         <div className="rod-actions">{actionButtons}</div>
       </div>
 
-      {/* info box */}
-      <div className="rod-box">
-        <h2 className="rod-box-title">Thông tin khách</h2>
-        <div className="rod-info-grid">
-          <p>
-            <span>Tên:</span> {order.receiverName || "Khách"}
-          </p>
-          <p>
-            <span>SĐT:</span> {order.receiverPhone || "—"}
-          </p>
-          <p className="rod-info-full">
-            <span>Địa chỉ:</span> {order.orderAddress || "—"}
-          </p>
-          
-          <p>
-            <span>Thanh toán:</span>{" "}
-            {order.paymentMethod === "bank"
-              ? "Chuyển khoản"
-              : order.paymentMethod === "cash"
-              ? "Tiền mặt"
-              : "—"}
-          </p>
+      {/* GRID: Thông tin + tổng tiền */}
+      <div className="rod-main-grid">
+        {/* box thông tin khách */}
+        <div className="rod-box">
+          <h2 className="rod-box-title">Thông tin khách</h2>
+          <div className="rod-info-grid">
+            <p>
+              <span>Tên:</span> {order.receiverName || "Khách"}
+            </p>
+            <p>
+              <span>SĐT:</span> {order.receiverPhone || "—"}
+            </p>
+            <p className="rod-info-full">
+              <span>Địa chỉ:</span> {order.orderAddress || "—"}
+            </p>
+
+            <p>
+              <span>Thanh toán:</span>
+              {order.paymentMethod === "bank"
+                ? "Chuyển khoản"
+                : order.paymentMethod === "cash"
+                ? "Tiền mặt"
+                : "—"}
+            </p>
+          </div>
+        </div>
+
+        {/* box tổng tiền */}
+        <div className="rod-box rod-totalbox">
+          <div>
+            <span>Tạm tính</span>
+            <b>{(order.subtotal || 0).toLocaleString("vi-VN")}₫</b>
+          </div>
+          <div>
+            <span>Phí giao</span>
+            <b>{(order.shippingFee || 0).toLocaleString("vi-VN")}₫</b>
+          </div>
+          <div className="rod-grand">
+            <span>Tổng thanh toán</span>
+            <b>{(order.total || 0).toLocaleString("vi-VN")}₫</b>
+          </div>
         </div>
       </div>
 
-      {/* items */}
+      {/* box món đã đặt */}
       <div className="rod-box">
         <h2 className="rod-box-title">Món đã đặt</h2>
         {Array.isArray(order.items) && order.items.length > 0 ? (
@@ -212,22 +237,6 @@ export default function RestaurantOrderDetail() {
         ) : (
           <p>Không có món.</p>
         )}
-      </div>
-
-      {/* total */}
-      <div className="rod-box rod-totalbox">
-        <div>
-          <span>Tạm tính</span>
-          <b>{(order.subtotal || 0).toLocaleString("vi-VN")}₫</b>
-        </div>
-        <div>
-          <span>Phí giao</span>
-          <b>{(order.shippingFee || 0).toLocaleString("vi-VN")}₫</b>
-        </div>
-        <div className="rod-grand">
-          <span>Tổng thanh toán</span>
-          <b>{(order.total || 0).toLocaleString("vi-VN")}₫</b>
-        </div>
       </div>
     </div>
   );

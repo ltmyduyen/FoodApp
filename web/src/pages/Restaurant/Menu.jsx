@@ -2,84 +2,68 @@ import { useEffect, useState } from "react";
 import {
   collection,
   doc,
-  getDocs,
   onSnapshot,
-  query,
   updateDoc,
 } from "firebase/firestore";
 import { db } from "@shared/FireBase";
-import { useAuthContext } from "../../hooks/useAuth.jsx";
 import "../../pages/css/Restaurant/Menu.css";
 
-const PAGE_SIZE = 5; // muốn 5 hay 10 thì đổi ở đây
+const PAGE_SIZE = 10; // muốn 5 hay 10 thì đổi ở đây
 
 export default function RestaurantMenu() {
-  const { user } = useAuthContext();
-  const branchId = user?.branchId || user?.restaurantBranchId || "";
-  const [branchFoods, setBranchFoods] = useState([]);
-  const [foodsMaster, setFoodsMaster] = useState({});
+  const [foods, setFoods] = useState([]);
   const [loading, setLoading] = useState(true);
   const [toggling, setToggling] = useState("");
   const [page, setPage] = useState(1);
 
-  // nghe subcollection branchFoods của chi nhánh
+  // 🔁 Nghe realtime collection "foods"
   useEffect(() => {
-    if (!branchId) {
-      setLoading(false);
-      return;
-    }
-    const ref = collection(db, "branches", branchId, "branchFoods");
+    const ref = collection(db, "foods");
+
     const unsub = onSnapshot(
-      query(ref),
+      ref,
       (snap) => {
-        const list = snap.docs.map((d) => ({
-          id: d.id,
-          ...d.data(),
-        }));
-        setBranchFoods(list);
+        const list = snap.docs.map((d) => {
+          const data = d.data() || {};
+
+          const sizePrice =
+            Array.isArray(data.sizes) && data.sizes.length > 0
+              ? data.sizes[0].price || 0
+              : null;
+          const displayPrice =
+            typeof sizePrice === "number" ? sizePrice : data.price || 0;
+
+          return {
+            id: d.id,
+            code: data.code || d.id,
+            name: data.name || `Món ${d.id}`,
+            category: data.category || "—",
+            price: displayPrice,
+            isActive: data.isActive !== false, // mặc định true
+            image:
+              data.image ||
+              data.img ||
+              "https://via.placeholder.com/70x90?text=Food",
+          };
+        });
+
+        setFoods(list);
         setLoading(false);
-        setPage(1); // về trang 1 khi dữ liệu đổi
+        setPage(1);
       },
       (err) => {
-        console.error(err);
+        console.error("load foods error", err);
         setLoading(false);
       }
     );
-    return () => unsub();
-  }, [branchId]);
 
-  // load bảng foods tổng
-  useEffect(() => {
-    async function loadFoods() {
-      const snap = await getDocs(collection(db, "foods"));
-      const map = {};
-      snap.forEach((d) => {
-        map[d.id] = { id: d.id, ...d.data() };
-      });
-      setFoodsMaster(map);
-    }
-    loadFoods();
+    return () => unsub();
   }, []);
 
   const handleToggle = async (row) => {
-    if (!branchId) return;
-
-    // nếu món gốc đã khóa thì không cho mở bên chi nhánh
-    const master = foodsMaster[row.foodId];
-    if (master && master.isActive === false) {
-      alert("Món này đã bị admin khóa ở hệ thống, chi nhánh không thể mở.");
-      return;
-    }
-
-    setToggling(row.branchFoodId);
+    setToggling(row.id);
     try {
-      const ref = doc(
-        db,
-        "branches",
-        branchId,
-        "branchFoods",
-        row.branchFoodId
-      );
+      const ref = doc(db, "foods", row.id);
       await updateDoc(ref, {
         isActive: !row.isActive,
       });
@@ -91,44 +75,16 @@ export default function RestaurantMenu() {
     }
   };
 
-  // gộp lại để render
-  // QUAN TRỌNG: ẩn luôn những branchFoods mà món gốc (foods) đang isActive === false
-  const mergedRows = branchFoods
-    .map((bf) => {
-      const food = foodsMaster[bf.foodId] || {};
-
-      const sizePrice =
-        Array.isArray(food.sizes) && food.sizes.length > 0
-          ? food.sizes[0].price || 0
-          : null;
-      const displayPrice =
-        typeof sizePrice === "number" ? sizePrice : food.price || 0;
-
-      return {
-        branchFoodId: bf.id,
-        foodId: bf.foodId,
-        isActive: bf.isActive,
-        // trạng thái món gốc
-        globalActive: food.isActive !== false, // undefined hoặc true → true
-        code: food.code || bf.foodId,
-        name: food.name || `Món ${bf.foodId}`,
-        category: food.category || "—",
-        price: displayPrice,
-        image:
-          food.image ||
-          food.img ||
-          "https://via.placeholder.com/70x90?text=Food",
-      };
-    })
-    // FILTER ở đây: chỉ hiển thị nếu món gốc vẫn active
-    .filter((r) => r.globalActive);
+  // thống kê
+  const totalFoods = foods.length;
+  const activeCount = foods.filter((r) => r.isActive).length;
 
   // phân trang
   const totalPages =
-    mergedRows.length === 0 ? 1 : Math.ceil(mergedRows.length / PAGE_SIZE);
+    foods.length === 0 ? 1 : Math.ceil(foods.length / PAGE_SIZE);
 
   const start = (page - 1) * PAGE_SIZE;
-  const currentRows = mergedRows.slice(start, start + PAGE_SIZE);
+  const currentRows = foods.slice(start, start + PAGE_SIZE);
 
   const goPage = (p) => {
     if (p < 1 || p > totalPages) return;
@@ -137,11 +93,28 @@ export default function RestaurantMenu() {
 
   return (
     <div className="rest-menu-wrap">
+      <div className="rest-menu-head">
+        <div>
+          <h1 className="rest-menu-title">Quản lý món ăn</h1>
+          <p className="rest-menu-sub">
+            Bật / tắt món đang bán trong hệ thống. Khóa ở đây là khóa toàn bộ.
+          </p>
+        </div>
+        <div className="rest-menu-meta">
+          <span>
+            Tổng món: <strong>{totalFoods}</strong>
+          </span>
+          <span>
+            Đang bán: <strong>{activeCount}</strong>
+          </span>
+        </div>
+      </div>
+
       <div className="rest-menu-tablewrap">
         {loading ? (
-          <p>Đang tải...</p>
-        ) : mergedRows.length === 0 ? (
-          <p>Chưa có món khả dụng (có thể admin đã khóa món ở hệ thống).</p>
+          <p className="rest-menu-empty">Đang tải dữ liệu menu...</p>
+        ) : foods.length === 0 ? (
+          <p className="rest-menu-empty">Chưa có món nào trong hệ thống.</p>
         ) : (
           <>
             <table className="rest-menu-table">
@@ -149,16 +122,16 @@ export default function RestaurantMenu() {
                 <tr>
                   <th>Mã SP</th>
                   <th>Ảnh</th>
-                  <th>Tên SP</th>
+                  <th>Tên món</th>
                   <th>Danh mục</th>
                   <th>Giá</th>
                   <th>Trạng thái</th>
-                  <th>Thao tác</th>
+                  <th style={{ textAlign: "right" }}>Thao tác</th>
                 </tr>
               </thead>
               <tbody>
                 {currentRows.map((r) => (
-                  <tr key={r.branchFoodId}>
+                  <tr key={r.id}>
                     <td>{r.code}</td>
                     <td>
                       <img
@@ -177,23 +150,23 @@ export default function RestaurantMenu() {
                           (r.isActive ? "active" : "inactive")
                         }
                       >
-                        {r.isActive ? "Đang bán" : "Tạm dừng"}
+                        {r.isActive ? "Đang bán" : "Đã khoá"}
                       </span>
                     </td>
-                    <td>
+                    <td style={{ textAlign: "right" }}>
                       <button
                         type="button"
                         className={
                           "rest-btn " + (r.isActive ? "lock" : "open")
                         }
                         onClick={() => handleToggle(r)}
-                        disabled={toggling === r.branchFoodId}
+                        disabled={toggling === r.id}
                       >
-                        {toggling === r.branchFoodId
+                        {toggling === r.id
                           ? "Đang đổi..."
                           : r.isActive
-                          ? "Khoá"
-                          : "Mở"}
+                          ? "Khoá món"
+                          : "Mở bán"}
                       </button>
                     </td>
                   </tr>

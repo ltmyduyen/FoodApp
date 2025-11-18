@@ -8,7 +8,7 @@ export default function Footer() {
     <>
       {/* CONTACT */}
       <section className="contact" id="contact">
-        <h2>Liên hệ với Kinget</h2>
+        <h2>Liên hệ với Healthy Bites</h2>
         <p>Hãy liên hệ với chúng tôi nếu có bất kỳ thắc mắc hoặc phản hồi nào.</p>
         <hr className="contact-sep" />
 
@@ -16,8 +16,8 @@ export default function Footer() {
           {/* Cột trái */}
           <div className="contact-col">
             <p><FaMapMarkerAlt /> 273 An Dương Vương, Quận 5</p>
-            <p><FaEnvelope /> kinget2004@gmail.com</p>
-            <p><FaPhone /> 19002911</p>
+            <p><FaEnvelope /> healthybite@gmail.com</p>
+            <p><FaPhone /> 190019001179</p>
           </div>
 
           {/* Cột giữa */}

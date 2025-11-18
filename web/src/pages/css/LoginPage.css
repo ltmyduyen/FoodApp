@@ -1,78 +1,247 @@
-/* ===== Trang Auth (scoped) ===== */
-.auth-page{
-  background: linear-gradient(to right, #e2e2e2, #e2e2e2);
-  min-height: 100dvh;
-  display:flex; align-items:center; justify-content:center;
-  padding: 24px 0;
+/* ===== Trang Auth full màn hình ===== */
+.auth-page {
+  background: linear-gradient(to right, #f1f8e9, #e2e2e2);
+  min-height: 100vh;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: stretch; /* kéo full chiều cao */
+  justify-content: center;
+  padding: 0; /* không chừa khoảng trắng xung quanh */
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
 }
 
-/* Hộp container giống CSS bạn đang dùng */
-.auth-page .container{
-  background:#fff; border-radius:30px;
-  box-shadow: 0 5px 15px rgba(0,0,0,.35);
-  position:relative; overflow:hidden;
-  width:768px; max-width:100%; min-height:480px;
+/* Container giờ chiếm full màn hình, không còn là 1 ô nhỏ nữa */
+.auth-page .container {
+  background: #fff;
+  border-radius: 0;
+  box-shadow: none;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  min-height: 100vh;
 }
 
-.auth-page .container p{ font-size:14px; line-height:20px; letter-spacing:.3px; margin:20px 0; }
-.auth-page .container a{ color:#F58220; font-size:13px; text-decoration:none; margin:15px 0 10px; }
-.auth-page .container button{
-  background:#F58220; color:#fff; font-size:12px; padding:10px 45px;
-  border:1px solid transparent; border-radius:8px; font-weight:600;
-  letter-spacing:.5px; text-transform:uppercase; margin-top:10px; cursor:pointer;
-  transition: filter .15s ease;
+.auth-page .container p {
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.3px;
+  margin: 20px 0;
 }
-.auth-page .container button:hover{ filter: brightness(1.05); }
-.auth-page .container button.hidden{ background:transparent; border-color:#fff; }
+.auth-page .container a {
+  color: #f58220;
+  font-size: 13px;
+  text-decoration: none;
+  margin: 15px 0 10px;
+}
+.auth-page .container button {
+  background: #f58220;
+  color: #fff;
+  font-size: 12px;
+  padding: 10px 45px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: filter 0.15s ease, transform 0.1s ease;
+}
+.auth-page .container button:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+.auth-page .container button.hidden {
+  background: transparent;
+  border-color: #fff;
+}
 
-.auth-page .container form{
-  background:#fff; display:flex; align-items:center; justify-content:center;
-  flex-direction:column; padding:0 40px; height:100%;
+/* ==== Header trên form (logo + title) ==== */
+.auth-page .auth-header {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 12px;
 }
-.auth-page .container input{
-  background:#eee; border:none; margin:8px 0; padding:10px 15px; font-size:13px;
-  border-radius:8px; width:100%; outline:none;
+.auth-page .auth-logo {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  margin-bottom: 6px;
+}
+.auth-page .auth-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+}
+.auth-page .auth-subtitle {
+  font-size: 13px;
+  color: #666;
+  margin-top: 4px;
 }
 
-/* Bố cục 2 panel + toggle */
-.auth-page .form-container{ position:absolute; top:0; height:100%; transition:all .6s ease-in-out; }
-.auth-page .sign-in{ left:0; width:50%; z-index:2; }
-.auth-page .sign-up{ left:0; width:50%; opacity:0; z-index:1; }
+/* Form chiếm toàn bộ phần bên trái */
+.auth-page .container form {
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0 40px 24px;
+  width: 100%;
+  height: 100%;
+}
+.auth-page .container input {
+  background: #eee;
+  border: none;
+  margin: 8px 0;
+  padding: 10px 15px;
+  font-size: 13px;
+  border-radius: 8px;
+  width: 100%;
+  outline: none;
+}
 
-.auth-page .toggle-container{
-  position:absolute; top:0; left:50%; width:50%; height:100%; overflow:hidden;
-  transition: all .6s ease-in-out; border-radius:150px 0 0 100px; z-index:1000;
+/* Bố cục 2 panel + toggle giữ nguyên nhưng kéo full chiều cao */
+.auth-page .form-container {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  transition: all 0.6s ease-in-out;
 }
-.auth-page .toggle{
-  background:#F58220; color:#fff; position:relative; left:-100%;
-  height:100%; width:200%; transform:translateX(0); transition:all .6s ease-in-out;
+.auth-page .sign-in {
+  left: 0;
+  width: 50%;
+  z-index: 2;
 }
-.auth-page .toggle-panel{
-  position:absolute; width:50%; height:100%;
-  display:flex; align-items:center; justify-content:center; flex-direction:column;
-  padding:0 30px; text-align:center; top:0; transform:translateX(0); transition:all .6s ease-in-out;
+.auth-page .sign-up {
+  left: 0;
+  width: 50%;
+  opacity: 0;
+  z-index: 1;
 }
-.auth-page .toggle-left{ transform:translateX(-200%); }
-.auth-page .toggle-right{ right:0; transform:translateX(0); }
 
-/* Hỗ trợ class right-panel-active (đổi tab) */
-.auth-page .container.right-panel-active .sign-in{ transform: translateX(100%); }
-.auth-page .container.right-panel-active .sign-up{
-  transform: translateX(100%); opacity:1; z-index:5; animation: move .6s;
+/* Panel bên phải (gradient) chiếm nửa màn hình bên phải */
+.auth-page .toggle-container {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+  transition: all 0.6s ease-in-out;
+  border-radius: 0; /* bỏ bo góc, full screen */
+  z-index: 1000;
 }
-.auth-page .container.right-panel-active .toggle-container{
-  transform: translateX(-100%); border-radius:0 150px 100px 0;
+.auth-page .toggle {
+  background: linear-gradient(135deg, #cddc39, #f58220);
+  color: #fff;
+  position: relative;
+  left: -100%;
+  height: 100%;
+  width: 200%;
+  transform: translateX(0);
+  transition: all 0.6s ease-in-out;
 }
-.auth-page .container.right-panel-active .toggle{ transform: translateX(50%); }
-.auth-page .container.right-panel-active .toggle-left{ transform: translateX(0); }
-.auth-page .container.right-panel-active .toggle-right{ transform: translateX(200%); }
+.auth-page .toggle-panel {
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0 30px;
+  text-align: center;
+  top: 0;
+  transform: translateX(0);
+  transition: all 0.6s ease-in-out;
+}
+.auth-page .toggle-panel h1 {
+  font-size: 26px;
+  font-weight: 700;
+}
+.auth-page .toggle-panel p {
+  color: #fdfdfd;
+}
+.auth-page .toggle-left {
+  transform: translateX(-200%);
+}
+.auth-page .toggle-right {
+  right: 0;
+  transform: translateX(0);
+}
+
+/* Khi active tab Đăng ký */
+.auth-page .container.right-panel-active .sign-in {
+  transform: translateX(100%);
+}
+.auth-page .container.right-panel-active .sign-up {
+  transform: translateX(100%);
+  opacity: 1;
+  z-index: 5;
+  animation: move 0.6s;
+}
+.auth-page .container.right-panel-active .toggle-container {
+  transform: translateX(-100%);
+}
+.auth-page .container.right-panel-active .toggle {
+  transform: translateX(50%);
+}
+.auth-page .container.right-panel-active .toggle-left {
+  transform: translateX(0);
+}
+.auth-page .container.right-panel-active .toggle-right {
+  transform: translateX(200%);
+}
 
 @keyframes move {
-  0%,49.99% { opacity:0; z-index:1; }
-  50%,100%  { opacity:1; z-index:5; }
+  0%,
+  49.99% {
+    opacity: 0;
+    z-index: 1;
+  }
+  50%,
+  100% {
+    opacity: 1;
+    z-index: 5;
+  }
 }
 
-/* Link & row phụ */
-.auth-page .form-row{ width:100%; display:flex; justify-content:flex-end; }
-.auth-page .link{ color:#0066cc; }
-.auth-page .link:hover{ text-decoration: underline; }
+/* Row link phụ */
+.auth-page .form-row {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+.auth-page .link {
+  color: #0066cc;
+}
+.auth-page .link:hover {
+  text-decoration: underline;
+}
+
+/* Mobile: ưu tiên form, ẩn panel gradient cho đỡ chật */
+@media (max-width: 768px) {
+  .auth-page {
+    align-items: center;
+  }
+  .auth-page .container {
+    height: auto;
+    min-height: 100vh;
+  }
+  .auth-page .toggle-container {
+    display: none;
+  }
+  .auth-page .sign-in,
+  .auth-page .sign-up {
+    width: 100%;
+  }
+  .auth-page .container.right-panel-active .sign-in,
+  .auth-page .container.right-panel-active .sign-up {
+    transform: translateX(0);
+  }
+}

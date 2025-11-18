@@ -3,7 +3,7 @@
   width: min(var(--page-max), 100% - 2 * var(--page-pad));
   margin-inline: auto;
   padding-inline: var(--page-pad);
-  background: #f58220;
+  background: #CDDC39;  /* nền xanh nhạt */
 }
 
 .ff-header {
@@ -15,7 +15,7 @@
 
 .ff-header.scrolled {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-  background: #f58220;
+  background: #CDDC39; /* scroll vẫn xanh nhạt */
   transition: box-shadow 0.25s ease, background 0.25s ease;
 }
 
@@ -45,7 +45,7 @@
 .ff-menu a {
   text-decoration: none;
   font-weight: 600;
-  color: #000;
+  color: #33691E;              /* CHỮ XANH ĐẬM */
   font-size: 20px;
   border-radius: 8px;
   display: inline-flex;
@@ -56,7 +56,7 @@
 
 .ff-menu a:hover,
 .ff-menu a.active {
-  color: #f0bb57;
+  color: #2a5618;              /* hover/active xanh đậm hơn */
 }
 
 .ff-has-dd {
@@ -99,7 +99,7 @@
 }
 
 .ff-dropdown a:hover {
-  color: rgb(255, 157, 0);
+  color: #2a5618;        /* hover link dropdown xanh đậm */
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -155,6 +155,7 @@
   display: grid;
   place-items: center;
   cursor: pointer;
+  color: #33691E;        /* icon kính lúp xanh đậm */
 }
 
 /* ===== USER ===== */
@@ -175,7 +176,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: #000;
+  color: #33691E;        /* ICON USER XANH ĐẬM */
 }
 
 .ff-user-link:focus {
@@ -184,10 +185,10 @@
 }
 
 .ff-user-link:hover {
-  color: #ffffff;
+  color: #2a5618;        /* hover user đậm hơn */
 }
 
-/* ===== USER DROPDOWN (đã sửa theo hình) ===== */
+/* ===== USER DROPDOWN ===== */
 .ff-user-dd {
   position: absolute;
   top: calc(100% + 8px);
@@ -210,7 +211,6 @@
   opacity: 1;
   pointer-events: auto;
   transform: translateY(0);
-  
 }
 
 .ff-user-name {
@@ -229,19 +229,18 @@
   text-align: center;
   padding: 6px 6px;
   border-radius: 8px;
-  
   border: 0;
   font: inherit;
   font-size: 14px;
   color: #333;
   cursor: pointer;
   transition: background 0.12s ease;
-  text-decoration: none; /* 👈 bỏ gạch chân */
+  text-decoration: none;
 }
 
 .ff-user-dd a:hover,
 .ff-user-dd button:hover {
-  background: rgba(255, 153, 80, 0.515);
+  background: rgba(205, 220, 57, 0.25); /* lime nhạt */
 }
 
 /* nút đăng xuất */
@@ -254,11 +253,11 @@
 .ff-cart {
   position: relative;
   font-size: 27px;
-  color: #000;
+  color: #33691E;        /* ICON CART XANH ĐẬM */
 }
 
 .ff-cart:hover {
-  color: #ffffff;
+  color: #2a5618;
 }
 
 .ff-badge {
@@ -350,7 +349,7 @@
 
   text-decoration: none;
   font-weight: 600;
-  color: #000;
+  color: #33691E;          /* BUTTON MENU XANH ĐẬM */
   font-size: 20px;
   border-radius: 8px;
   display: inline-flex;
@@ -360,7 +359,7 @@
 }
 
 .ff-menu .ff-menu-link:hover {
-  color: #f0bb57;
+  color: #2a5618;
 }
 
 /* ===== BRANCH ===== */
@@ -370,13 +369,14 @@
 }
 
 .ff-branch-btn {
-  background: #fff;
-  border: 1px solid #eee;
+  background: #ffffff;
+  border: 1px solid #d8e3b3;
   border-radius: 999px;
   padding: 5px 14px;
   font-size: 13px;
   cursor: pointer;
   white-space: nowrap;
+  color: #33691E;
 }
 
 .ff-branch-dd {
@@ -410,11 +410,11 @@
 }
 
 .ff-branch-item:hover {
-  background: #fff6ed;
+  background: #f3f8e0;        /* hover xanh nhạt */
 }
 
 .ff-branch-item.active {
-  background: #ffe0bf;
+  background: #e7f1b7;        /* active xanh hơn */
 }
 
 .ff-branch-sub {

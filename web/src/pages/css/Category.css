@@ -1,0 +1,157 @@
+/* ============ CATEGORY PAGE ============ */
+.cate-page {
+  max-width: 1400px;
+  margin: 20px auto 40px;
+}
+
+.cate-layout {
+  display: flex;
+  gap: 20px;
+}
+
+/* Sidebar */
+.cate-sidebar {
+  width: 230px;
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #e2e8c6; /* viền nhạt theo tone #CDDC39 */
+  padding: 20px;
+}
+
+.cate-sidebar-title {
+  margin-bottom: 15px;
+  font-weight: 600;
+  color: #33691E;              /* xanh đậm */
+}
+
+.cate-sidebar-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.cate-sidebar-list li {
+  padding: 6px 0;
+  cursor: pointer;
+  color: #3a4a38;              /* xanh xám nhẹ */
+  transition: 0.2s;
+}
+
+.cate-sidebar-list li:hover {
+  color: #CDDC39;              /* hover vàng xanh */
+  padding-left: 4px;
+}
+
+.cate-sidebar-list li.active {
+  color: #33691E;              /* đang chọn: xanh đậm */
+  font-weight: 700;
+}
+
+/* Main */
+.cate-main {
+  flex: 1;
+}
+
+.cate-breadcrumb {
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #7d8f64;              /* xám pha xanh */
+}
+
+.cate-breadcrumb span {
+  color: #33691E;
+  font-weight: 500;
+}
+
+.cate-title {
+  font-size: 22px;
+  margin-bottom: 12px;
+  color: #33691E;
+}
+
+/* Sort bar */
+.sortbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0 15px;
+}
+
+.sortbar-label {
+  font-size: 14px;
+  color: #33691E;
+}
+
+.sort-btn {
+  padding: 6px 16px;
+  border-radius: 6px;
+  border: 1px solid #c2d79c;   /* viền xanh nhạt */
+  background: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  color: #33691E;
+  transition: 0.2s;
+}
+
+.sort-btn:hover {
+  background: #f5fadf;         /* nền hover rất nhạt */
+}
+
+.sort-btn.active {
+  background: #CDDC39;         /* nút active: vàng xanh */
+  color: #fff;
+  border-color: #CDDC39;
+}
+
+/* ============ HOME LAYOUT ============ */
+.home-page {
+  max-width: 1400px;
+  margin: 20px auto 40px;
+}
+
+.home-top {
+  display: flex;
+  gap: 20px;
+}
+
+/* reuse style sidebar trên, chỉ thêm class cho chắc */
+.home-sidebar {
+  width: 230px; /* giống sidebar bên Category */
+}
+
+.home-top-main {
+  flex: 1;
+}
+
+.home-section {
+  margin-top: 30px;
+}
+/* ===== PAGINATION ===== */
+.pagination {
+  margin: 24px auto 40px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.page-btn {
+  min-width: 36px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid #cddc39;
+  background: #fff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.page-btn--active {
+  background: #cddc39;
+  color: #1b5e20;
+  font-weight: 700;
+}
+
+.page-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
