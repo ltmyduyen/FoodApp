@@ -147,3 +147,28 @@ export default function AdminUsers() {
     </div>
   );
 }
+<table class="ad-users-table">
+  <thead>
+    <tr>
+      <th>Mã</th>
+      <th>Tên</th>
+      <th>Email</th>
+      <th>Trạng thái</th>
+      <th>Hành động</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td data-label="Mã">U001</td>
+      <td data-label="Tên">Nguyễn A</td>
+      <td data-label="Email">a@example.com</td>
+      <td data-label="Trạng thái"><span class="ad-u-status active">Hoạt động</span></td>
+      <td data-label="Hành động">
+        <div class="ad-u-actions">
+          <button class="ad-u-action open">Xem</button>
+          <button class="ad-u-action block">Chặn</button>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>

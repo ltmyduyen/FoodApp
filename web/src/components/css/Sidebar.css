@@ -1,152 +1,96 @@
-/* ===================== */
-/*  LAYOUT RESTAURANT    */
-/* ===================== */
-
-/* Vỏ bọc layout ngoài cùng của khu restaurant
-   -> dùng trong RestaurantLayout / RestaurantShell */
-.rest-shell {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;              /* 🔥 Header trên – content dưới */
-  background: #fef9c3;                 /* nền vàng nhạt, có thể để gradient nếu muốn */
-  background: linear-gradient(135deg, #fef9c3, #fde68a, #fed7aa);
+/* ===== Admin Shell layout (nếu chưa có) ===== */
+.adm-shell{
+  min-height:100vh;
+  display:flex;
+  background:#fff;
+}
+.adm-sidebar{
+  width:200px;                /* chiều rộng sidebar */
+  background: linear-gradient(180deg,#33691E,#4CAF50); /* dark navy */
+  color:#e5e7eb;
+  display:flex;
+  flex-direction:column;
+  padding:10px 10px 8px;
+  box-shadow: 2px 0 14px rgba(2,6,23,.18);
+}
+.adm-main{
+  flex:1;
+  background:#ffffff;         /* nền content trắng như ảnh */
+  padding:18px 20px;
 }
 
-/* Khu vực nội dung phía dưới thanh topbar */
-.rest-main {
-  flex: 1;
-  width: 100%;
-  box-sizing: border-box;
-  padding: 16px 18px 28px;             /* giống mấy page admin/restaurant kia */
+/* ===== Brand trên đầu ===== */
+.adm-brand{
+  display:flex; align-items:center; gap:10px;
+  padding:8px 6px 12px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  margin-bottom:10px;
+}
+.adm-brand-circle{
+  width:28px; height:28px; border-radius:999px;
+  display:grid; place-items:center;
+  background:rgba(255,255,255,.12);
+  color:#fff; font-size:14px;
+}
+.adm-brand-name{ font-weight:800; color:#fff; }
+
+/* ===== Nav links ===== */
+.adm-nav{
+  display:flex; flex-direction:column; gap:6px;
+  margin-top:8px;
+}
+.adm-link{
+  display:block;
+  padding:8px 10px;
+  border-radius:8px;
+  color:#e5e7eb;
+  text-decoration:none;
+  font-weight:600;
+  letter-spacing:.1px;
+  transition: background .15s ease, color .15s ease, transform .04s ease;
+}
+.adm-link:hover{
+  background: rgba(255,255,255,.06);
+}
+.adm-link.active{
+  background:#e9eefc;         /* pill sáng như hình */
+  color:#0b1220;
+  border:1px solid #d6def9;
+  box-shadow: 0 2px 10px rgba(12,18,32,.18);
 }
 
-/* (Nếu trước đây có .rest-sidebar, .adm-shell, .adm-sidebar,... thì xoá hết,
-   tránh bị width 230px làm lệch layout) */
-
-
-/* ===================== */
-/*  TOP NAV HORIZONTAL   */
-/* ===================== */
-
-.rest-topbar {
-  width: 100%;
-  height: 70px;
-  background: linear-gradient(90deg, #ffb74d, #ff7a1a);
-  display: flex;
-  align-items: center;
-  padding: 0 22px;
-  box-sizing: border-box;
-  box-shadow: 0 4px 14px rgba(255, 122, 26, 0.35);
-  gap: 26px;
-  position: sticky;
-  top: 0;
-  z-index: 50;
+/* ===== Bottom user + logout ===== */
+.adm-bottom{
+  margin-top:auto;
+  padding-top:10px;
+  border-top:1px solid rgba(255,255,255,.06);
 }
-
-/* Left brand */
-.rest-top-brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.adm-user-name{
+  color:#cbd5e1;
+  font-size:12px;
+  margin: 0 2px 8px;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
 }
-
-.rest-top-icon {
-  width: 42px;
-  height: 42px;
-  background: rgba(255, 255, 255, 0.22);
-  border-radius: 999px;
-  display: grid;
-  place-items: center;
-  font-size: 20px;
+.adm-logout{
+  background:#ef4444; color:#fff; border:none;
+  padding:6px 10px; border-radius:8px; font-weight:700;
+  cursor:pointer; transition:filter .15s ease, transform .04s;
 }
+.adm-logout:hover{ filter:brightness(.95); }
+.adm-logout:active{ transform:translateY(1px); }
 
-.rest-top-name {
-  font-size: 15px;
-  font-weight: 700;
-  color: #fff;
-  margin-bottom: 2px;
+/* ===== Responsive ===== */
+@media (max-width: 920px){
+  .adm-sidebar{ width:180px; }
 }
-
-.rest-top-branch {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.85);
-}
-
-/* Navigation */
-.rest-top-nav {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  flex: 1;
-}
-
-.rest-top-link {
-  position: relative;
-  color: #fff;
-  text-decoration: none;
-  padding: 8px 12px;
-  border-radius: 999px;
-  transition: 0.12s ease-out;
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-.rest-top-link:hover {
-  background: rgba(255, 255, 255, 0.18);
-}
-
-.rest-top-link.active {
-  background: #fff;
-  color: #ff7a1a;
-  font-weight: 600;
-}
-
-/* badge số đơn đang chờ */
-.rest-top-badge {
-  background: #ef4444;
-  color: #fff;
-  padding: 2px 7px;
-  border-radius: 999px;
-  font-size: 11px;
-  margin-left: 6px;
-  font-weight: 700;
-}
-
-/* logout */
-.rest-top-logout {
-  background: rgba(255, 255, 255, 0.28);
-  border: none;
-  padding: 8px 14px;
-  border-radius: 14px;
-  cursor: pointer;
-  font-weight: 600;
-  color: #fff;
-  transition: 0.15s;
-}
-
-.rest-top-logout:hover {
-  background: rgba(255, 255, 255, 0.4);
-}
-
-
-/* ===================== */
-/*        MOBILE         */
-/* ===================== */
-
-@media (max-width: 780px) {
-  .rest-topbar {
-    flex-wrap: wrap;
-    height: auto;
-    padding: 10px 16px;
-    gap: 10px;
+@media (max-width: 720px){
+  .adm-shell{ flex-direction:column; }
+  .adm-sidebar{
+    width:100%;
+    flex-direction:row; align-items:center; gap:8px;
+    padding:10px;
+    position:sticky; top:0; z-index:40;
   }
-
-  .rest-top-nav {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .rest-main {
-    padding: 12px 10px 20px;
-  }
+  .adm-nav{ flex-direction:row; flex-wrap:wrap; gap:6px; }
+  .adm-bottom{ margin-left:auto; border-top:none; }
 }

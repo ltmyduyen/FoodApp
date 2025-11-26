@@ -148,3 +148,110 @@
     padding: 0;
   }
 }
+/* ===== polish: container + typography ===== */
+.ad-users-wrap {
+  --page-max: 1280px;
+  --page-pad: 20px;
+  background: #f5f7fb; /* nhẹ hơn #edf0f5 */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding-bottom: 28px;
+}
+.ad-users-container {
+  width: min(var(--page-max), 100% - 2*var(--page-pad));
+  margin-inline: auto;
+  padding-block: 14px 0;
+}
+
+/* ===== table polish ===== */
+.ad-users-table {
+  border: 1px solid #eef0f4;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+}
+.ad-users-table thead th {
+  background: #0f172a;              /* navy đậm, bớt “đen sì” */
+  letter-spacing: .2px;
+}
+.ad-users-table tbody tr:hover {
+  background: #f8fafc;
+}
+.ad-users-table tbody td {
+  vertical-align: middle;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+/* căn đều cột hành động */
+.ad-u-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* nút: hover + focus rõ ràng hơn, bấm tiện hơn */
+.ad-u-action,
+.ad-u-add-btn {
+  transition: background .15s ease, transform .04s ease;
+}
+.ad-u-action:active,
+.ad-u-add-btn:active {
+  transform: translateY(1px);
+}
+.ad-u-action:focus-visible,
+.ad-u-add-btn:focus-visible {
+  outline: 2px solid #93c5fd;
+  outline-offset: 2px;
+}
+
+/* badge trạng thái sắc nét, đồng nhất line-height */
+.ad-u-status {
+  line-height: 1;
+  border: 1px solid transparent;
+}
+.ad-u-status.active {
+  background: #ecfdf5;
+  color: #065f46;
+  border-color: #a7f3d0;
+}
+.ad-u-status.blocked {
+  background: #fef2f2;
+  color: #991b1b;
+  border-color: #fecaca;
+}
+
+/* phân trang: hit area to hơn + trạng thái hover */
+.ad-users-pagination {
+  gap: 8px;
+}
+.ad-users-pagination button {
+  min-width: 36px;
+  height: 36px;
+}
+.ad-users-pagination button:hover:not(:disabled) {
+  background: #f1f5f9;
+}
+.ad-users-pagination button.active:hover {
+  filter: brightness(0.95);
+}
+
+/* ===== mobile: hiện nhãn cột bằng ::before ===== */
+@media (max-width: 820px) {
+  .ad-users-table tbody tr {
+    background: #fff;
+    border: 1px solid #eef0f4;
+    border-radius: 12px;
+    margin-bottom: 8px;
+  }
+  .ad-users-table tbody td {
+    padding: 6px 0;
+    white-space: normal;
+  }
+  .ad-users-table tbody td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 2px;
+  }
+}
