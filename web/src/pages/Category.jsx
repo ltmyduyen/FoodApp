@@ -98,9 +98,9 @@ export default function Category() {
           <SortBar sort={sortType} setSort={setSortType} />
 
           {loading ? (
-            <ProductList limit={6} maxWidth="1180px" />
+            <ProductList limit={6} maxWidth="100%" />
           ) : (
-            <ProductList items={sortedItems} maxWidth="1180px" />
+            <ProductList items={sortedItems} maxWidth="100%" />
           )}
         </div>
       </div>

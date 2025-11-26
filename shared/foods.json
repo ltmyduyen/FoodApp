@@ -1,262 +1,296 @@
 [
   {
-    "name": "Pizza Hải Sản Cocktail",
-    "category": "Pizza",
-    "description": "Tôm, cua, giăm bông và xốt Thousand Island.",
-    "image": "http://thepizzacompany.vn/images/thumbs/000/0002212_sf-cocktail-test_500.png",
-    "sizes": [
-      { "label": "Nhỏ", "price": 159000 },
-      { "label": "Vừa", "price": 139000 },
-      { "label": "Lớn", "price": 349000 }
-    ],
-    "bases": [
-    { "label": "Đế mỏng", "price": 0 },
-    { "label": "Đế dày", "price": 0 }
-  ],
-   "toppings": [
-    { "label": "Thêm phô mai", "price": 50000 },
-    { "label": "Thêm xúc xích", "price": 50000 },
-    { "label": "Thêm xúc xích + phô mai ", "price": 99000 }
-  ]
+    "id": "com-bo-vien-xot-ca-chua",
+    "name": "Cơm bò viên xốt cà chua",
+    "description": "Cơm gạo lứt, bò viên xốt cà chua, rau củ luộc theo ngày",
+    "price": 59000,
+    "calories": 395,
+    "category": "Cơm",
+    "image": "https://i.postimg.cc/SsMCLZqg/menu1.png",
+    "rating": 4.7
   },
   {
-    "name": "Pizza Hải Sản Nhiệt Đới",
-    "category": "Pizza",
-    "description": "Tôm, nghêu, mực, cua, dứa và xốt Thousand Island.",
-    "image": "http://thepizzacompany.vn/images/thumbs/000/0002211_tropical-sf-test_500.png",
-    "sizes": [
-      { "label": "Nhỏ", "price": 159000 },
-      { "label": "Vừa", "price": 139000 },
-      { "label": "Lớn", "price": 349000 }
-    ],
-    "bases": [
-    { "label": "Đế mỏng", "price": 0 },
-    { "label": "Đế dày", "price": 0 }
-  ],
-   "toppings": [
-    { "label": "Thêm phô mai", "price": 50000 },
-    { "label": "Thêm xúc xích", "price": 50000 },
-    { "label": "Thêm xúc xích + phô mai ", "price": 99000 }
-  ]
+    "id": "com-ca-saba-xot-ca-chua",
+    "name": "Cơm cá saba xốt cà chua",
+    "description": "Cá saba sốt cà chua, cơm gạo lứt, rau củ theo mùa",
+    "price": 89000,
+    "calories": 450,
+    "category": "Cơm",
+    "image": "https://i.postimg.cc/zXfLNJPC/menu2.png",
+    "rating": 4.8
   },
   {
-    "name": "Pizza Tôm Cocktail",
-    "category": "Pizza",
-    "description": "Tôm, nấm, dứa, cà chua và xốt Thousand Island.",
-    "image": "http://thepizzacompany.vn/images/thumbs/000/0002216_shrimp-ctl-test_500.png",
-    "sizes": [
-      { "label": "Nhỏ", "price": 159000 },
-      { "label": "Vừa", "price": 139000 },
-      { "label": "Lớn", "price": 349000 }
-    ],
-    "bases": [
-    { "label": "Đế mỏng", "price": 0 },
-    { "label": "Đế dày", "price": 0 }
-  ],
-   "toppings": [
-    { "label": "Thêm phô mai", "price": 50000 },
-    { "label": "Thêm xúc xích", "price": 50000 },
-    { "label": "Thêm xúc xích + phô mai ", "price": 99000 }
-  ]
+    "id": "com-heo-bam-xot-ca-chua",
+    "name": "Cơm heo băm xốt cà chua",
+    "description": "Cơm gạo lứt, heo băm xốt cà chua, rau củ luộc theo ngày",
+    "price": 55000,
+    "calories": 395,
+    "category": "Cơm",
+    "image": "https://i.postimg.cc/9Q6zyyX9/menu3.png",
+    "rating": 4.6
   },
   {
-    "name": "Pizza Thịt Nguội Xúc Xích",
-    "category": "Pizza",
-    "description": "Thịt nguội, xúc xích, dứa và xốt Thousand Island.",
-    "image": "http://thepizzacompany.vn/images/thumbs/000/0003536_aloha_500.png",
-    "sizes": [
-      { "label": "Nhỏ", "price": 159000 },
-      { "label": "Vừa", "price": 139000 },
-      { "label": "Lớn", "price": 349000 }
-    ],
-    "bases": [
-    { "label": "Đế mỏng", "price": 0 },
-    { "label": "Đế dày", "price": 0 }
-  ],
-   "toppings": [
-    { "label": "Thêm phô mai", "price": 50000 },
-    { "label": "Thêm xúc xích", "price": 50000 },
-    { "label": "Thêm xúc xích + phô mai ", "price": 99000 }
-  ]
+    "id": "com-heo-nuong-cot-let",
+    "name": "Cơm heo nướng cốt lết",
+    "description": "Cơm gạo lứt, thịt heo nướng cốt lết, rau củ luộc theo ngày",
+    "price": 65000,
+    "calories": 370,
+    "category": "Cơm",
+    "image": "https://i.postimg.cc/bw7d11YH/menu4.png",
+    "rating": 4.8
   },
   {
-    "name": "Pizza Thịt Xông Khói Đặc Biệt",
-    "category": "Pizza",
-    "description": "Thịt giăm bông, thịt xông khói, ớt xanh và cà chua.",
-    "image": "http://thepizzacompany.vn/images/thumbs/000/0002221_bacon-sup_500.png",
-    "sizes": [
-      { "label": "Nhỏ", "price": 159000 },
-      { "label": "Vừa", "price": 139000 },
-      { "label": "Lớn", "price": 349000 }
-    ],
-    "bases": [
-    { "label": "Đế mỏng", "price": 0 },
-    { "label": "Đế dày", "price": 0 }
-  ],
-   "toppings": [
-    { "label": "Thêm phô mai", "price": 50000 },
-    { "label": "Thêm xúc xích", "price": 50000 },
-    { "label": "Thêm xúc xích + phô mai ", "price": 99000 }
-  ]
+    "id": "my-lut-heo-nuong-cot-let",
+    "name": "Mỳ lứt heo nướng cốt lết",
+    "description": "Mỳ gạo lứt, thịt heo nướng cốt lết, rau salad theo ngày",
+    "price": 67000,
+    "calories": 370,
+    "category": "Mỳ",
+    "image": "https://i.postimg.cc/Bnrt22Zt/menu5.png",
+    "rating": 4.7
   },
   {
-    "name": "Pizza Thịt Nguội Kiểu Canada",
-    "category": "Pizza",
-    "description": "Thịt nguội và bắp ngọt.",
-    "image": "http://thepizzacompany.vn/images/thumbs/000/0002222_ca-bacon_500.png",
-    "sizes": [
-      { "label": "Nhỏ", "price": 159000 },
-      { "label": "Vừa", "price": 139000 },
-      { "label": "Lớn", "price": 349000 }
-    ],
-    "bases": [
-      { "label": "Đế mỏng", "price": 0 },
-      { "label": "Đế dày", "price": 0 }
-    ],
-    "toppings": [
-      { "label": "Thêm phô mai", "price": 50000 },
-      { "label": "Thêm xúc xích", "price": 50000 },
-      { "label": "Thêm xúc xích + phô mai ", "price": 99000 }
-    ]
+    "id": "com-tron-heo-ham",
+    "name": "Cơm trộn heo hầm",
+    "description": "Cơm gạo lứt trộn, thịt heo hầm, rau củ luộc theo ngày",
+    "price": 69000,
+    "calories": 391,
+    "category": "Cơm",
+    "image": "https://i.postimg.cc/8z2sLLkL/menu6.png",
+    "rating": 4.9
   },
   {
-    "name": "Pizza Gà Nướng 3 Vị",
-    "category": "Pizza",
-    "description": "Gà nướng, gà bơ tỏi và gà ướp xốt nấm.",
-    "image": "http://thepizzacompany.vn/images/thumbs/000/0002223_ck-trio_500.png",
-    "sizes": [
-      { "label": "Nhỏ", "price": 159000 },
-      { "label": "Vừa", "price": 139000 },
-      { "label": "Lớn", "price": 349000 }
-    ],
-    "bases": [
-    { "label": "Đế mỏng", "price": 0 },
-    { "label": "Đế dày", "price": 0 }
-  ],
-   "toppings": [
-    { "label": "Thêm phô mai", "price": 50000 },
-    { "label": "Thêm xúc xích", "price": 50000 },
-    { "label": "Thêm xúc xích + phô mai ", "price": 99000 }
-  ]
+    "id": "gimbab-cuon-bo",
+    "name": "Gimbab cuộn bò",
+    "description": "Rong biển khô, cơm gạo lứt đen, bò xào, cà rốt, dưa chuột, trứng, sốt mè rang hoặc xì dầu",
+    "price": 35000,
+    "calories": 249,
+    "category": "Gimbab",
+    "image": "https://i.postimg.cc/xdL85qqh/menu7.png",
+    "rating": 4.8
   },
   {
-    "name": "Pizza Hải Sản Cao Cấp",
-    "category": "Pizza",
-    "description": "Tôm, cua, mực, nghêu và xốt Marinara.",
-    "image": "http://thepizzacompany.vn/images/thumbs/000/0002214_sf-deluxe_500.png",
-    "sizes": [
-      { "label": "Nhỏ", "price": 159000 },
-      { "label": "Vừa", "price": 139000 },
-      { "label": "Lớn", "price": 349000 }
-    ],
-    "bases": [
-    { "label": "Đế mỏng", "price": 0 },
-    { "label": "Đế dày", "price": 0 }
-  ],
-   "toppings": [
-    { "label": "Thêm phô mai", "price": 50000 },
-    { "label": "Thêm xúc xích", "price": 50000 },
-    { "label": "Thêm xúc xích + phô mai ", "price": 99000 }
-  ]
+    "id": "banh-trang-gao-lut-cuon-ga-nuong",
+    "name": "Bánh tráng gạo lứt cuốn gà nướng",
+    "description": "Bánh tráng gạo lứt, bún gạo lứt, gà nướng ngũ vị, rau củ tươi, sốt mắm chua ngọt",
+    "price": 19000,
+    "calories": 160,
+    "category": "Cuốn",
+    "image": "https://i.postimg.cc/Y939cV6m/menu8.png",
+    "rating": 4.6
   },
   {
-  "name": "Burger 2 lớp bò, phô mai",
-  "category": "Burger",
-  "description": "Bánh burger bò nướng kèm phô mai tan chảy.",
-  "image": "https://mcdonalds.vn/uploads/2018/food/burgers/doublecheese_bb.png",
-  "sizes": [
-    { "label": "Vừa", "price": 59000 },
-    { "label": "Lớn", "price": 69000 }
-  ],
-  "addOns": [
-    { "label": "Thêm phô mai", "price": 10000 },
-    { "label": "Thêm sốt", "price": 9000 }
-  ]
-},
+    "id": "com-ga-nuong-sot-tieu-xanh",
+    "name": "Cơm gà nướng sốt tiêu xanh",
+    "description": "Gà nướng, sốt tiêu xanh, cơm gạo lứt đen, rau củ luộc",
+    "price": 75000,
+    "calories": 356,
+    "category": "Cơm",
+    "image": "https://i.postimg.cc/JnqnwgNq/menu9.png",
+    "rating": 4.9
+  },
   {
-  "name": "Burger Gà phô mai đặc biệt",
-  "category": "Burger",
-  "description": "Bánh burger gà kèm phô mai tan chảy.",
-  "image": "https://mcdonalds.vn/uploads/2018/food/burgers/mcchickendlx_bb.png",
-  "sizes": [
-    { "label": "Vừa", "price": 59000 },
-    { "label": "Lớn", "price": 69000 }
-  ],
-  "addOns": [
-    { "label": "Thêm phô mai", "price": 10000 },
-    { "label": "Thêm sốt", "price": 9000 }
-  ]
-},
+    "id": "bun-bo-nam-bo",
+    "name": "Bún bò Nam Bộ",
+    "description": "Bún gạo lứt, rau sống, bò xào, sốt mắm tỏi ớt, rau thơm",
+    "price": 83000,
+    "calories": 354,
+    "category": "Bún",
+    "image": "https://i.postimg.cc/j2SjRXcX/menu10.png",
+    "rating": 4.8
+  },
   {
-  "name": "Burger Phi lê Cá phô mai",
-  "category": "Burger",
-  "description": "Bánh burger cá kèm phô mai tan chảy.",
-  "image": "https://mcdonalds.vn/uploads/2018/food/burgers/fof_bb.png",
-  "sizes": [
-    { "label": "Vừa", "price": 59000 },
-    { "label": "Lớn", "price": 69000 }
-  ],
-  "addOns": [
-    { "label": "Thêm phô mai", "price": 10000 },
-    { "label": "Thêm sốt", "price": 9000 }
-  ]
-},
+    "id": "com-ga-nuong-sot-kikoman",
+    "name": "Cơm gà nướng sốt Kikoman",
+    "description": "Cơm gạo lứt, má đùi gà nướng, sốt Kikoman, rau củ theo ngày",
+    "price": 83000,
+    "calories": 355,
+    "category": "Cơm",
+    "image": "https://i.postimg.cc/sxg23cmK/menu11.png",
+    "rating": 4.8
+  },
   {
-  "name": "Burger Big Mac",
-  "category": "Burger",
-  "description": "Burger 2 lớp bò, phô-mai, rau tươi và sốt Big Mac.",
-  "image": "https://mcdonalds.vn/uploads/2018/food/burgers/bigmac_bb.png",
-  "sizes": [
-    { "label": "Vừa", "price": 59000 },
-    { "label": "Lớn", "price": 69000 }
-  ],
-  "addOns": [
-    { "label": "Thêm phô mai", "price": 10000 },
-    { "label": "Thêm sốt", "price": 9000 }
-  ]
+    "id": "bun-cha-ca-lang-ha-noi",
+    "name": "Bún chả cá lăng Hà Nội",
+    "description": "Bún gạo lứt, cá lăng nướng, rau xà lách, rau thơm, mắm tỏi ớt",
+    "price": 89000,
+    "calories": 438,
+    "category": "Bún",
+    "image": "https://i.postimg.cc/ryfmQByZ/menu12.png",
+    "rating": 4.9
+  },
+  {
+    "id": "com-lut-tron-ca-hoi",
+    "name": "Cơm lứt trộn cá hồi",
+    "description": "Cơm gạo lứt đen, cá hồi vụn, rau củ, sốt xì dầu mè",
+    "price": 99000,
+    "calories": 470,
+    "category": "Cơm",
+    "image": "https://i.postimg.cc/3rtRnsJr/menu13.png",
+    "rating": 4.9
+  },
+  {
+    "id": "my-lut-tron-heo-xiu",
+    "name": "Mỳ lứt trộn heo xíu",
+    "description": "Mỳ gạo lứt, heo nướng xá xíu, rau sống, sốt xì dầu",
+    "price": 79000,
+    "calories": 469,
+    "category": "Mỳ",
+    "image": "https://i.postimg.cc/L6hs7xnL/menu15.png",
+    "rating": 4.8
+  },
+  {
+    "id": "salad-luon-ga-nuong",
+    "name": "Salad lườn gà nướng",
+    "description": "Xà lách Roman, lườn gà áp chảo, trứng gà, bánh mì, phô mai Parmesan, sốt Ceasar",
+    "price": 109000,
+    "calories": 320,
+    "category": "Salad",
+    "image": "https://i.postimg.cc/L6hs7xnL/menu15.png",
+    "rating": 4.9
+  },
+  {
+    "id": "com-lut-ga-xe-cay",
+    "name": "Cơm lứt gà xé cay",
+    "description": "Cơm gạo lứt đen, ức gà trộn cay, rau củ, sốt xì dầu mè",
+    "price": 83000,
+    "calories": 425,
+    "category": "Cơm",
+    "image": "https://i.postimg.cc/SN5KpcMV/menu16.png",
+    "rating": 4.9
+  },
+  {
+    "id": "com-tron-bo-bulgogi",
+    "name": "Cơm trộn bò Bulgogi",
+    "description": "Cơm gạo lứt đen, bò xào Bulgogi, cà rốt, ngô, đậu hà lan",
+    "price": 83000,
+    "calories": 442,
+    "category": "Cơm",
+    "image": "https://i.postimg.cc/mgHgZhYq/menu17.png",
+    "rating": 4.9
+  },
+  {
+    "id": "com-lut-ca-hoi-sot-teriyaki",
+    "name": "Cơm lứt cá hồi sốt Teriyaki",
+    "description": "Cơm gạo lứt, cá hồi nguyên miếng nướng, sốt Teriyaki, rau củ theo ngày",
+    "price": 155000,
+    "calories": 488,
+    "category": "Cơm",
+    "image": "https://i.postimg.cc/htdt4h8t/menu18.png",
+    "rating": 5.0
+  },
+  {
+    "id": "com-ca-saba-sot-teriyaki",
+    "name": "Cơm cá Saba sốt Teriyaki",
+    "description": "Cơm gạo lứt, cá saba phi lê nướng, sốt Teriyaki, rau củ theo suất",
+    "price": 83000,
+    "calories": 480,
+    "category": "Cơm",
+    "image": "https://i.postimg.cc/Dz3ySF5B/menu19.png",
+    "rating": 4.9
+  },
+  {
+    "id": "com-lut-bo-xao-nam",
+    "name": "Cơm lứt bò xào nấm",
+    "description": "Cơm gạo lứt vàng, thịt bò, nấm đùi gà, hành tây, hành lá, rau củ theo mùa",
+    "price": 83000,
+    "calories": 342,
+    "category": "Cơm",
+    "image": "https://i.postimg.cc/pdQV871c/menu20.png",
+    "rating": 4.8
+  },  
+    {
+    "id": "D01",
+    "name": "Kombucha vị me 250ml",
+    "price": 47000,
+    "image": "https://i.postimg.cc/tY9Mh0k5/menu21.jpg",
+    "description": "Kombucha vị me – trà bất tử lên men tự nhiên",
+    "category": "Healthy Drink",
+    "calories": 90,
+    "rating": 4.8,
+    "isActive": true
+  },
+
+  {
+    "id": "D02",
+    "name": "Kombucha vị chanh tươi mật ong 250ml",
+    "price": 47000,
+    "image": "https://i.postimg.cc/tY9Mh0k5/menu21.jpg",
+    "description": "Kombucha chanh tươi mật ong – giúp thanh lọc cơ thể",
+    "category": "Healthy Drink",
+    "calories": 85,
+    "rating": 4.9,
+    "isActive": true
+  },
+
+  {
+    "id": "D03",
+    "name": "Kombucha vị chanh leo 250ml",
+    "price": 47000,
+    "image": "https://i.postimg.cc/tY9Mh0k5/menu21.jpg",
+    "description": "Kombucha chanh leo – thơm ngon, hỗ trợ tiêu hóa tốt",
+    "category": "Healthy Drink",
+    "calories": 88,
+    "rating": 4.7,
+    "isActive": true
+  },
+
+  {
+    "id": "D04",
+    "name": "Kombucha Ba Lành vị quả dại 500ml",
+    "price": 68000,
+    "image": "https://i.postimg.cc/4mXSzCPF/menu22.jpg",
+    "description": "Kombucha vị quả dại – thanh mát, tốt cho sức khỏe",
+    "category": "Healthy Drink",
+    "calories": 110,
+    "rating": 4.8,
+    "isActive": true
+  },
+{
+  "id": "S01",
+  "name": "Mix Thanh Dinh Dưỡng Giòn Tan",
+  "price": 69000,
+  "image": "https://i.postimg.cc/CBGzpnWP/menu25.jpg",
+  "description": "Thanh hạt dinh dưỡng mix nhiều loại, ít đường, tốt cho sức khỏe.",
+  "category": "Healthy Snack",
+  "calories": 220,
+  "rating": 4.8,
+  "isActive": true
 },
 {
-  "name": "Coca Cola",
-  "category": "Drink",
-  "description": "Coca cùng đá mát lạnh.",
-  "image": "https://mcdonalds.vn/uploads/2018/food/beverage/mcd-food-beverages-soft-drinks-coke.png",
-  "sizes": [
-    { "label": "Vừa", "price": 19000 },
-    { "label": "Lớn", "price": 30000 }
-  ]
+  "id": "S02",
+  "name": "Bánh Đồng Tiền Mix Hạt Dinh Dưỡng",
+  "price": 89000,
+  "image": "https://i.postimg.cc/HnyMtVPW/menu26.jpg",
+  "description": "Mix nhiều loại hạt rang thơm, giàu dinh dưỡng, tốt cho tiêu hoá.",
+  "category": "Healthy Snack",
+  "calories": 260,
+  "rating": 4.9,
+  "isActive": true
 },
 {
-  "name": "Nước suối",
-  "category": "Drink",
-  "description": "Nước suối đóng chai Dasani.",
-  "image": "https://mcdonalds.vn/uploads/2018/food/beverage/dasani_water.png",
-  "sizes": [
-    { "label": "Vừa", "price": 19000 },
-    { "label": "Lớn", "price": 30000 }
-  ]
+  "id": "S03",
+  "name": "Mix Bánh Thuyền Siêu Hạt ",
+  "price": 65000,
+  "image": "https://i.postimg.cc/T5ThdYxM/menu27.jpg",
+  "description": "Thanh cốm sạch kết hợp hạt, ít béo, phù hợp ăn kiêng.",
+  "category": "Healthy Snack",
+  "calories": 210,
+  "rating": 4.7,
+  "isActive": true
 },
 {
-  "name": "Sprite",
-  "category": "Drink",
-  "description": "Sprite cùng đá mát lạnh.",
-  "image": "https://mcdonalds.vn/uploads/2018/food/beverage/Product_thumb_Sprite.png",
-  "sizes": [
-    { "label": "Vừa", "price": 19000 },
-    { "label": "Lớn", "price": 30000 }
-  ]
-},
-{
-  "name": "Fanta Cam",
-  "category": "Drink",
-  "description": "Fanta cam cùng đá mát lạnh.",
-  "image": "https://mcdonalds.vn/uploads/2018/food/beverage/hero-pdt-Fanta-201703_0.png",
-  "sizes": [
-    { "label": "Vừa", "price": 19000 },
-    { "label": "Lớn", "price": 30000 }
-  ]
+  "id": "S04",
+  "name": "Mix Thanh Dinh Dưỡng Giòn Tan ",
+  "price": 129000,
+  "image": "https://i.postimg.cc/zvghkVPL/menu28.jpg",
+  "description": "Set quà gồm nhiều loại thanh hạt và snack healthy, phù hợp biếu tặng.",
+  "category": "Healthy Snack",
+  "calories": 320,
+  "rating": 5.0,
+  "isActive": true
 }
 
 
-  
-  
+
 ]

@@ -15,7 +15,7 @@ export default function Footer() {
         <div className="contact-grid">
           {/* Cột trái */}
           <div className="contact-col">
-            <p><FaMapMarkerAlt /> 273 An Dương Vương, Quận 5</p>
+            <p><FaMapMarkerAlt /> 455 Âu Cơ, Quận Tân Phú</p>
             <p><FaEnvelope /> healthybite@gmail.com</p>
             <p><FaPhone /> 190019001179</p>
           </div>
@@ -23,12 +23,12 @@ export default function Footer() {
           {/* Cột giữa */}
           <div className="contact-col">
             <p><FaClock /> Thứ hai - Thứ bảy: 9:00 Sáng - 5:00 Chiều</p>
-            <p><FaGlobe /> www.kinget.com</p>
+            <p><FaGlobe /> www.healthybites.com</p>
           </div>
 
           {/* Cột phải: form */}
           <div className="contact-col contact-sub">
-            <h3>Nhận thông báo từ chúng tôi:</h3>
+            <h3>Đăng kí nhận các thông tin khuyến mãi</h3>
             <form onSubmit={(e) => e.preventDefault()} className="sub-form">
               <input type="email" id="emailInput" placeholder="Nhập địa chỉ email của bạn" required />
               <button type="submit">Gửi</button>

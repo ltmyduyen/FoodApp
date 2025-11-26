@@ -74,10 +74,10 @@ export default function AllProductsPage() {
       <h1 className="cate-title">Tất Cả Sản Phẩm</h1>
 
       {loading ? (
-        <ProductList limit={PAGE_SIZE} maxWidth="1180px" />
+        <ProductList limit={PAGE_SIZE} maxWidth="100%" />
       ) : (
         <>
-          <ProductList items={pagedItems} maxWidth="1180px" />
+          <ProductList items={pagedItems} maxWidth="100%" />
 
           {/* ====== PHÂN TRANG ====== */}
           {totalPages > 1 && (

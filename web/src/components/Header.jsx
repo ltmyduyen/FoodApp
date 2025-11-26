@@ -108,9 +108,7 @@ export default function Header({ cartCount = 0 }) {
     <header className={`ff-header ${scrolled ? "scrolled" : ""}`}>
       <div className="ff-container">
         <nav className="ff-nav">
-          <Link to="/" className="ff-logo">
-            <img src="/static/common/Kinget.png" alt="Kinget" />
-          </Link>
+         
 
     
 

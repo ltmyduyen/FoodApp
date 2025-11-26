@@ -140,9 +140,9 @@ export default function Home() {
       <div id="section-fixed" className="home-section">
         <h2 className="cate-title">Menu Cố Định</h2>
         {loading ? (
-          <ProductList limit={6} maxWidth="1180px" />
+          <ProductList limit={6} maxWidth="100%" />
         ) : (
-          <ProductList items={fixedItems} maxWidth="1180px" />
+          <ProductList items={fixedItems} maxWidth="100%" />
         )}
       </div>
 
@@ -150,9 +150,9 @@ export default function Home() {
       <div id="section-healthy" className="home-section">
         <h2 className="cate-title">Đồ Uống &amp; Đồ Ăn Vặt Healthy</h2>
         {loading ? (
-          <ProductList limit={6} maxWidth="1180px" />
+          <ProductList limit={6} maxWidth="100%" />
         ) : (
-          <ProductList items={healthyItems} maxWidth="1180px" />
+          <ProductList items={healthyItems} maxWidth="100%" />
         )}
       </div>
       <section id="section-contact" className="contact">

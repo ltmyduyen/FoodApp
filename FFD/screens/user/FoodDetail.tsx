@@ -117,141 +117,16 @@ const FoodDetailScreen: React.FC = () => {
             {food.description || "Thơm ngon, nóng hổi, phục vụ tận nơi!"}
           </Text>
 
-          {/* ==== SIZE (nếu có) */}
-          {cleanSizes.length > 0 && (
-            <>
-              <Text style={styles.sectionTitle}>Chọn kích cỡ</Text>
-              <View style={styles.optionRow}>
-                {cleanSizes.map((size, i) => (
-                  <TouchableOpacity
-                    key={i}
-                    style={[
-                      styles.optionButton,
-                      selectedSize?.label === size.label && styles.optionActive,
-                    ]}
-                    onPress={() => setSelectedSize(size)}
-                  >
-                    <Text
-                      style={[
-                        styles.optionText,
-                        selectedSize?.label === size.label && styles.optionTextActive,
-                      ]}
-                    >
-                      {size.label}
-                    </Text>
-                    <Text
-                      style={[
-                        styles.optionPrice,
-                        selectedSize?.label === size.label && styles.optionTextActive,
-                      ]}
-                    >
-                      {formatVND(size.price)}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </>
-          )}
+      
+        
 
-          {/* ==== ĐẾ BÁNH (Pizza) */}
-          {food.category === "Pizza" && cleanBases.length > 0 && (
-            <>
-              <Text style={styles.sectionTitle}>Chọn đế bánh</Text>
-              <View style={styles.optionRow}>
-                {cleanBases.map((base, i) => (
-                  <TouchableOpacity
-                    key={i}
-                    style={[
-                      styles.optionButton,
-                      selectedBase?.label === base.label && styles.optionActive,
-                    ]}
-                    onPress={() => setSelectedBase(base)}
-                  >
-                    <Text
-                      style={[
-                        styles.optionText,
-                        selectedBase?.label === base.label && styles.optionTextActive,
-                      ]}
-                    >
-                      {base.label}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </>
-          )}
-
-          {/* ==== TOPPING */}
-          {cleanTops.length > 0 && (
-            <>
-              <Text style={styles.sectionTitle}>Thêm topping</Text>
-              <View style={styles.optionRow}>
-                {cleanTops.map((top, i) => {
-                  const isSelected = selectedTopping.some((t) => t.label === top.label);
-                  return (
-                    <TouchableOpacity
-                      key={i}
-                      style={[styles.optionButton, isSelected && styles.optionActive]}
-                      onPress={() => toggleSelect(top, "topping")}
-                    >
-                      <Text
-                        style={[styles.optionText, isSelected && styles.optionTextActive]}
-                      >
-                        {top.label}
-                      </Text>
-                      <Text
-                        style={[
-                          styles.optionPrice,
-                          isSelected && styles.optionTextActive,
-                        ]}
-                      >
-                        +{formatVND(top.price)}
-                      </Text>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
-            </>
-          )}
-
-          {/* ==== ADD-ONS (Burger) */}
-          {food.category === "Burger" && cleanAddOns.length > 0 && (
-            <>
-              <Text style={styles.sectionTitle}>Tùy chọn thêm</Text>
-              <View style={styles.optionRow}>
-                {cleanAddOns.map((add, i) => {
-                  const isSelected = selectedAddOn.some((a) => a.label === add.label);
-                  return (
-                    <TouchableOpacity
-                      key={i}
-                      style={[styles.optionButton, isSelected && styles.optionActive]}
-                      onPress={() => toggleSelect(add, "addon")}
-                    >
-                      <Text
-                        style={[styles.optionText, isSelected && styles.optionTextActive]}
-                      >
-                        {add.label}
-                      </Text>
-                      <Text
-                        style={[
-                          styles.optionPrice,
-                          isSelected && styles.optionTextActive,
-                        ]}
-                      >
-                        +{formatVND(add.price)}
-                      </Text>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
-            </>
-          )}
-
+      
+      
           {/* ==== GHI CHÚ */}
           <Text style={styles.sectionTitle}>Ghi chú</Text>
           <TextInput
             style={[styles.input, { height: Math.min(inputHeight, 100) }]}
-            placeholder="Ví dụ: ít cay, thêm phô mai..."
+            placeholder="..."
             value={note}
             onChangeText={setNote}
             multiline
