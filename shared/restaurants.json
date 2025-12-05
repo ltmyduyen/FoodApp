@@ -1,0 +1,26 @@
+[
+  {
+    "id": "B01",
+    "name": "Eat Clean 1",
+    "address": "Quận 1, HCM",
+    "phone": "",
+    "phoneNumber": "0777546375",
+    "isActive": true
+  },
+  {
+    "id": "B02",
+    "name": "Eat Clean 2",
+    "address": "Quận 5, HCM",
+    "phone": "",
+    "phoneNumber": "0777546375",
+    "isActive": true
+  },
+  {
+    "id": "B03",
+    "name": "Eat Clean 3",
+    "address": "Thủ Đức, HCM",
+    "phone": "",
+    "phoneNumber": "0888888888",
+    "isActive": false
+  }
+]

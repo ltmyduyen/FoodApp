@@ -3,11 +3,9 @@ import { initializeApp } from "firebase/app";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
 import fs from "fs";
 
-// 1. đọc file JSON
-const raw = fs.readFileSync("./foods.json", "utf-8");
-const foods = JSON.parse(raw);
-
-// 2. CẤU HÌNH FIREBASE của bạn (dán config thật vào đây)
+// =========================
+// 🔧 1. Cấu hình Firebase
+// =========================
 const firebaseConfig = {
   apiKey: "AIzaSyCzYg1Di5hS48SDnw2VtxPwtOPV6iMmDeg",
   authDomain: "foodapp-30765.firebaseapp.com",
@@ -21,29 +19,59 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-function makeId(index) {
-  // index = 1 -> F01, 2 -> F02, 10 -> F10
-  return `F${String(index).padStart(2, "0")}`;
+// =========================
+// 📦 2. Hàm đọc file JSON
+// =========================
+function loadJSON(path) {
+  try {
+    const raw = fs.readFileSync(path, "utf-8");
+    return JSON.parse(raw);
+  } catch (err) {
+    console.error(`❌ Không thể đọc file: ${path}`, err);
+    process.exit(1);
+  }
 }
 
-async function run() {
-  console.log("📦 Bắt đầu import", foods.length, "món...");
+// =========================
+// 🧩 3. Hàm sinh mã ID
+// =========================
+function makeId(prefix, index) {
+  return `${prefix}${String(index).padStart(2, "0")}`;
+}
 
+// =========================
+// 🚀 4. Hàm import 1 collection
+// =========================
+async function importCollection(collectionName, data, prefix = "") {
+  console.log(`📂 Import ${data.length} document vào "${collectionName}"...`);
   let i = 1;
-  for (const item of foods) {
-    const id = makeId(i);
-
-    await setDoc(doc(db, "foods", id), {
+  for (const item of data) {
+    const id = item.id || (prefix ? makeId(prefix, i) : undefined);
+    await setDoc(doc(db, collectionName, id || crypto.randomUUID()), {
       ...item,
-      code: id,
-      createdAt: new Date(),
+      createdAt: new Date()
     });
-
-    console.log("✅ đã thêm:", id, item.name);
+    console.log(`✅ [${collectionName}] thêm: ${id || "(auto-ID)"} - ${item.name || item.email || ""}`);
     i++;
   }
+  console.log(`🎉 Hoàn tất "${collectionName}"!\n`);
+}
 
-  console.log("🎉 xong!");
+// =========================
+// 🧠 5. Chạy import
+// =========================
+async function run() {
+  const foods = loadJSON("./foods.json");
+  const branches = loadJSON("./restaurants.json"); // hoặc branches.json
+  const users = loadJSON("./users.json"); // nếu có
+
+  console.log("🚀 Bắt đầu import toàn bộ dữ liệu...\n");
+
+  await importCollection("foods", foods, "F");
+  await importCollection("branches", branches, "B");
+  await importCollection("users", users, "U");
+
+  console.log("🏁 Tất cả collection đã import xong!");
 }
 
 run().catch(console.error);
