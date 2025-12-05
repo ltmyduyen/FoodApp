@@ -1,9 +1,16 @@
-import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useAuthContext } from "../../hooks/useAuth.jsx";
 import { db } from "@shared/FireBase";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
-import "../css/Sidebar.css";
+import {
+  FaHome,
+  FaClipboardList,
+  FaPizzaSlice,
+  FaSignOutAlt,
+  FaStoreAlt,
+} from "react-icons/fa";
+import "../css/Side.css";
 
 export default function RestaurantSidebar() {
   const { user, logout } = useAuthContext();
@@ -12,26 +19,19 @@ export default function RestaurantSidebar() {
 
   const displayName =
     [user?.firstName, user?.lastName].filter(Boolean).join(" ") || "Nhà hàng";
-
   const branchId = user?.branchId || user?.restaurantBranchId || "—";
 
-  // Lắng nghe đơn đang chờ
   useEffect(() => {
     if (!branchId) return;
-
     const q = query(collection(db, "orders"), where("branchId", "==", branchId));
-
     const unsub = onSnapshot(q, (snap) => {
       let count = 0;
       snap.forEach((doc) => {
         const data = doc.data();
-        if (data.status === "processing" || data.status === "pending") {
-          count++;
-        }
+        if (data.status === "pending" || data.status === "processing") count++;
       });
       setPendingCount(count);
     });
-
     return () => unsub();
   }, [branchId]);
 
@@ -44,54 +44,51 @@ export default function RestaurantSidebar() {
   };
 
   return (
-    <header className="rest-topbar">
-      {/* Logo + brand */}
-      <div className="rest-top-brand">
-        <div className="rest-top-icon">🍽️</div>
+    <aside className="rest-side">
+      <div className="rest-side-brand">
+        <FaStoreAlt className="rest-side-logo" />
         <div>
-          <div className="rest-top-name">{displayName}</div>
-          <div className="rest-top-branch">Chi nhánh {branchId}</div>
+          <div className="rest-side-name">{displayName}</div>
+          <div className="rest-side-branch">Chi nhánh {branchId}</div>
         </div>
       </div>
 
-      {/* Navigation */}
-      <nav className="rest-top-nav">
+      <nav className="rest-side-nav">
         <NavLink
           to="/restaurant"
           end
           className={({ isActive }) =>
-            isActive ? "rest-top-link active" : "rest-top-link"
+            isActive ? "rest-side-link active" : "rest-side-link"
           }
         >
-          📊 Dashboard
+          <FaHome /> <span>Dashboard</span>
         </NavLink>
 
         <NavLink
           to="/restaurant/orders"
           className={({ isActive }) =>
-            isActive ? "rest-top-link active" : "rest-top-link"
+            isActive ? "rest-side-link active" : "rest-side-link"
           }
         >
-          🧾 Đơn hàng
+          <FaClipboardList /> <span>Đơn hàng</span>
           {pendingCount > 0 && (
-            <span className="rest-top-badge">{pendingCount}</span>
+            <span className="rest-side-badge">{pendingCount}</span>
           )}
         </NavLink>
 
         <NavLink
           to="/restaurant/menu"
           className={({ isActive }) =>
-            isActive ? "rest-top-link active" : "rest-top-link"
+            isActive ? "rest-side-link active" : "rest-side-link"
           }
         >
-          🍕 Món ăn
+          <FaPizzaSlice /> <span>Món ăn</span>
         </NavLink>
       </nav>
 
-      {/* Logout */}
-      <button className="rest-top-logout" onClick={handleLogout}>
-        Đăng xuất
+      <button className="rest-side-logout" onClick={handleLogout}>
+        <FaSignOutAlt /> <span>Đăng xuất</span>
       </button>
-    </header>
+    </aside>
   );
 }

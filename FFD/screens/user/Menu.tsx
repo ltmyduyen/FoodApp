@@ -48,7 +48,7 @@ const MenuScreen: React.FC = () => {
     return unsub;
   }, []);
 
-  // ===== 🍔 Lấy danh sách món ăn (ÉP KIỂU number CHO price)
+  // ===== 🍔 Lấy danh sách món ăn (ÉP KIỂU number CHO price/calories/rating)
   useEffect(() => {
     const unsub = onSnapshot(collection(db, "foods"), (snap) => {
       const list: Food[] = snap.docs.map((doc) => {
@@ -59,11 +59,11 @@ const MenuScreen: React.FC = () => {
           image: d.image ?? "",
           category: d.category ?? "Khác",
           description: d.description ?? "",
-          rating: typeof d.rating === "number" ? d.rating : Number(d.rating) || 0,
+          rating:
+            typeof d.rating === "number" ? d.rating : Number(d.rating) || 0,
           calories:
             typeof d.calories === "number" ? d.calories : Number(d.calories) || 0,
           isActive: d.isActive ?? true,
-          // 👇 Quan trọng: đảm bảo là number
           price: typeof d.price === "number" ? d.price : Number(d.price) || 0,
         } as Food;
       });
@@ -73,7 +73,7 @@ const MenuScreen: React.FC = () => {
     return unsub;
   }, []);
 
-  // ===== 🧩 Lấy branchFoods theo chi nhánh
+  // ===== 🧩 Lấy branchFoods theo chi nhánh (chấp nhận isActive || isAvailable, và fallback dùng doc.id)
   useEffect(() => {
     if (!activeBranch) return;
 
@@ -87,9 +87,15 @@ const MenuScreen: React.FC = () => {
         const keys = new Set<string>();
         snap.forEach((d) => {
           const data = d.data() as any;
-          if (data?.isActive === true && data.foodId) {
-            keys.add(String(data.foodId));
-          }
+          const isOn =
+            data?.isActive === true ||
+            data?.isAvailable === true ||
+            (data?.isActive === undefined && data?.isAvailable === undefined); // default true nếu không set
+          if (!isOn) return;
+
+          // nếu script đã dùng docId = foodId thì data.foodId có thể không có -> fallback doc.id
+          const fid = String(data?.foodId || d.id);
+          keys.add(fid);
         });
         setBranchKeys(keys);
         setLoadingBranchFoods(false);
@@ -99,7 +105,7 @@ const MenuScreen: React.FC = () => {
     return unsub;
   }, [activeBranch]);
 
-  // ===== 🔖 Category động (lấy từ DB)
+  // ===== 🔖 Category động (từ toàn bộ foods)
   const categories = useMemo(() => {
     const set = new Set<string>(["Tất cả"]);
     foods.forEach((f) => f.category && set.add(f.category));
@@ -112,14 +118,17 @@ const MenuScreen: React.FC = () => {
 
     let result = foods;
 
-    // Lọc theo branchFoods
-    if (activeBranch && branchKeys.size > 0) {
-      result = result.filter((f) => branchKeys.has(f.id));
-    } else {
-      result = [];
+    // Lọc theo branchFoods (chỉ giữ các món có trong subcollection)
+    if (activeBranch) {
+      if (branchKeys.size > 0) {
+        result = result.filter((f) => branchKeys.has(f.id));
+      } else {
+        // subcollection rỗng thì không có món
+        result = [];
+      }
     }
 
-    // Lọc theo category
+    // Lọc theo category đang chọn
     if (activeCategory !== "Tất cả") {
       result = result.filter((f) => f.category === activeCategory);
     }
@@ -149,7 +158,7 @@ const MenuScreen: React.FC = () => {
   return (
     <SafeAreaView style={styles.container}>
       {/* ===== Tabs Chi nhánh ===== */}
-      <View style={styles.tabSection}>
+      <View style={[styles.tabSection, { marginTop: 14 }]}>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -180,7 +189,7 @@ const MenuScreen: React.FC = () => {
       {/* ===== Tabs Category (động) ===== */}
       <View style={styles.tabSection}>
         <ScrollView
-          horizontal
+        horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.tabScroll}
         >

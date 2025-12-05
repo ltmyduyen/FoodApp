@@ -14,8 +14,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Swiper from "react-native-swiper";
-import { Video, ResizeMode } from "expo-av";
-import { collection, doc, getDoc, onSnapshot, getDocs } from "firebase/firestore";
+import { collection, doc, getDoc, onSnapshot } from "firebase/firestore";
 import { db } from "../../data/FireBase";
 import { Food } from "../../types/food";
 import FoodCard from "../../components/FoodCard";
@@ -48,7 +47,6 @@ const HomeScreen: React.FC = () => {
       }));
       setBranches(branchList);
 
-      // Nếu chưa có branch nào được chọn thì chọn mặc định
       if (!selectedBranch && branchList.length > 0) {
         setSelectedBranch(branchList[0].id);
       }
@@ -56,37 +54,44 @@ const HomeScreen: React.FC = () => {
     return unsubscribe;
   }, []);
 
-  // 🍔 Lấy món ăn theo chi nhánh hiện tại (dựa vào branchFoods)
+  // 🍔 Lấy món ăn theo chi nhánh hiện tại
   useEffect(() => {
     if (!selectedBranch) return;
 
     const branchFoodsRef = collection(db, `branches/${selectedBranch}/branchFoods`);
 
     const unsubscribe = onSnapshot(branchFoodsRef, async (snapshot) => {
-      const branchFoods = snapshot.docs
-        .map((d) => d.data())
-        .filter((f: any) => f.isActive === true);
+      const branchFoods = snapshot.docs.map((d) => ({
+        id: d.id,
+        ...d.data(),
+      }));
 
-      if (branchFoods.length === 0) {
+      // chỉ lấy món đang khả dụng
+      const actives = branchFoods.filter(
+        (f: any) => f.isAvailable ?? f.isActive ?? true
+      );
+
+      if (actives.length === 0) {
         setFoods([]);
         setFilteredFoods([]);
         setLoading(false);
         return;
       }
 
-      // Lấy danh sách foodId đang active
-      const foodIds = branchFoods.map((f: any) => f.foodId);
+      const foodIds = actives.map((f: any) => f.foodId);
 
-      // Lấy toàn bộ món ăn trong foods
-      const foodsSnap = await getDocs(collection(db, "foods"));
-      const allFoods = foodsSnap.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as Food[];
+      // lấy đúng các document cần trong "foods"
+      const foodDocs = await Promise.all(
+        foodIds.map((id: string) => getDoc(doc(db, "foods", id)))
+      );
 
-      // Lọc những món có foodId trùng với branchFoods
-      const visibleFoods = allFoods.filter((f) => foodIds.includes(f.id));
-      setFoods(visibleFoods);
+      const visibleFoods = foodDocs
+        .filter((snap) => snap.exists())
+        .map((snap) => ({
+          id: snap.id,
+          ...snap.data(),
+        })) as Food[];
+setFoods(visibleFoods);
       setFilteredFoods(visibleFoods);
       setLoading(false);
     });
@@ -94,7 +99,7 @@ const HomeScreen: React.FC = () => {
     return () => unsubscribe();
   }, [selectedBranch]);
 
-  // 💾 Lưu branch được chọn vào AsyncStorage
+  // 💾 Lưu branch được chọn
   useEffect(() => {
     if (selectedBranch) AsyncStorage.setItem("selectedBranch", selectedBranch);
   }, [selectedBranch]);
@@ -168,7 +173,7 @@ const HomeScreen: React.FC = () => {
                   );
                   setFilteredFoods(result);
                 }}
-              />
+/>
             </View>
           </View>
         </View>
@@ -182,7 +187,6 @@ const HomeScreen: React.FC = () => {
             dotStyle={{ backgroundColor: "#ccc" }}
             activeDotStyle={{ backgroundColor: "#F58220" }}
           >
-            
             <Image source={require("../images/slide1.png")} style={styles.banner} />
             <Image source={require("../images/slide2.png")} style={styles.banner} />
             <Image source={require("../images/slide3.png")} style={styles.banner} />
@@ -255,14 +259,13 @@ const HomeScreen: React.FC = () => {
 
 export default HomeScreen;
 
-// ============== STYLES ==============
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff" },
   headerContainer: {
     backgroundColor: "#CDDC39",
     paddingVertical: 16,
     paddingHorizontal: 14,
-    borderBottomLeftRadius: 10,
+borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
   },
   headerTop: {

@@ -1,0 +1,101 @@
+:root {
+  --rest-side-w: 240px;        /* chiều rộng sidebar */
+}
+
+/* ===== Sidebar cố định bên trái ===== */
+.rest-side {
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  width: var(--rest-side-w);
+  background: linear-gradient(180deg, #33691E, #558B2F);
+  color: #fff;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 22px 16px;
+  box-sizing: border-box;
+}
+
+/* Brand */
+.rest-side-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+.rest-side-logo { font-size: 32px; color: #CDDC39; }
+.rest-side-name { font-size: 16px; font-weight: 700; }
+.rest-side-branch { font-size: 13px; opacity: 0.9; }
+
+/* Nav */
+.rest-side-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+.rest-side-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: #fff;
+  font-weight: 500;
+  transition: background 0.2s, transform 0.08s;
+  position: relative;
+}
+.rest-side-link:hover { background: rgba(255,255,255,0.18); transform: scale(1.02); }
+.rest-side-link.active { background: #CDDC39; color: #222; font-weight: 700; }
+.rest-side-badge {
+  background: #E53935;
+  color: #fff;
+  font-size: 12px;
+  border-radius: 999px;
+  padding: 2px 7px;
+  margin-left: auto;
+  font-weight: 700;
+}
+
+/* Logout button */
+.rest-side-logout {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.16);
+  color: #fff; border: none; border-radius: 10px;
+  padding: 10px 14px; cursor: pointer; font-weight: 700;
+  transition: background 0.2s;
+}
+.rest-side-logout:hover { background: rgba(255,0,0,0.35); }
+
+/* ===== Khu vực nội dung bên phải ===== */
+.rest-main {
+  margin-left: var(--rest-side-w);   /* chừa chỗ cho sidebar */
+  padding: 20px;
+  min-height: 100vh;
+  box-sizing: border-box;
+  background: #f6f7f9;               /* tùy chỉnh, có thể bỏ */
+}
+
+/* Tuỳ chọn: chuẩn hóa container bên trong */
+.rest-main .container,
+.rest-main .page,
+.rest-main .wrap {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* ===== Responsive: thu gọn sidebar ===== */
+@media (max-width: 1024px) {
+  :root { --rest-side-w: 76px; }
+  .rest-side { padding: 18px 10px; }
+  .rest-side-link span { display: none; } /* chỉ hiện icon */
+  .rest-side-name, .rest-side-branch { display: none; }
+  .rest-side-logo { font-size: 26px; }
+}
+
+/* Nếu app có topbar cố định phía trên, mở 2 dòng này và thêm class has-topbar vào body/ wrapper
+.has-topbar .rest-side { top: 56px; }
+.has-topbar .rest-main { padding-top: 56px; }
+*/
