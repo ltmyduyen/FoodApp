@@ -7,7 +7,7 @@ import {
 } from "../services/foodService";
 import "./css/Category.css";
 
-const PAGE_SIZE = 12; // mỗi trang 12 món, thích thì đổi
+const PAGE_SIZE = 10; // mỗi trang 12 món, thích thì đổi
 
 export default function AllProductsPage() {
   const [items, setItems] = useState([]);

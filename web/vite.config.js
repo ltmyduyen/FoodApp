@@ -1,23 +1,25 @@
-import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
+import { defineConfig } from "vite";
 
 export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
-      "@shared": path.resolve(__dirname, "../shared"),
+      "@shared": path.resolve(__dirname, "../shared"), // ✅ alias tới folder shared
     },
   },
-  // 👇 cho Vite biết trước là sẽ dùng firebase
   optimizeDeps: {
     include: ["firebase/app", "firebase/firestore"],
   },
-  // 👇 cho phép đọc file ra ngoài thư mục web
   server: {
     fs: {
-      allow: [".."], // cho phép truy cập .. = D:\Kinget\shared
+      // ✅ Cho phép Vite đọc file ra ngoài /web (vd: ../shared)
+      allow: [".."],
     },
+    // ✅ Nếu bạn muốn chạy web ở IP nội bộ
+    host: true,
+    port: 5173,
   },
 });
