@@ -14,8 +14,16 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Swiper from "react-native-swiper";
-import { Video, ResizeMode } from "expo-av";
-import { collection, doc, getDoc, onSnapshot, getDocs } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  onSnapshot,
+  query,
+  where,
+  limit,
+} from "firebase/firestore";
 import { db } from "../../data/FireBase";
 import { Food } from "../../types/food";
 import FoodCard from "../../components/FoodCard";
@@ -23,6 +31,39 @@ import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../../context/AuthContext";
 import { CartContext } from "../../context/CartContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
+/** === Fisher–Yates shuffle để random thứ tự món === */
+function shuffleArray<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+/** ===== Helper: lấy foods theo danh sách id, có fallback theo field "id" ===== */
+async function fetchFoodsByIds(ids: string[]): Promise<Food[]> {
+  const results: Food[] = [];
+  for (const fid of ids) {
+    // 1) Thử lấy theo docId
+    const byId = await getDoc(doc(db, "foods", fid));
+    if (byId.exists()) {
+      results.push({ id: byId.id, ...(byId.data() as any) } as Food);
+      continue;
+    }
+    // 2) Fallback: nếu docId không khớp, query theo field "id" == fid
+    const q = query(collection(db, "foods"), where("id", "==", fid), limit(1));
+    const qs = await getDocs(q);
+    if (!qs.empty) {
+      const d = qs.docs[0];
+      results.push({ id: d.id, ...(d.data() as any) } as Food);
+    } else {
+      console.log("⚠️ Không tìm thấy foods cho foodId:", fid);
+    }
+  }
+  return results;
+}
 
 const HomeScreen: React.FC = () => {
   const [foods, setFoods] = useState<Food[]>([]);
@@ -39,67 +80,93 @@ const HomeScreen: React.FC = () => {
     useContext(CartContext)!;
   const totalItems = getTotalItems(selectedBranch || undefined);
 
-  // 🧩 Lấy danh sách chi nhánh
+  /** Lấy danh sách chi nhánh (nếu chưa chọn branch thì RANDOM 1 cái) */
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, "branches"), (snapshot) => {
-      const branchList = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        name: doc.data().name,
+    const unsubscribe = onSnapshot(collection(db, "branches"), async (snapshot) => {
+      const branchList = snapshot.docs.map((d) => ({
+        id: d.id,
+        name: (d.data() as any).name,
       }));
       setBranches(branchList);
 
-      // Nếu chưa có branch nào được chọn thì chọn mặc định
+      // nếu app chưa có selectedBranch thì random 1 chi nhánh
       if (!selectedBranch && branchList.length > 0) {
-        setSelectedBranch(branchList[0].id);
+        const random = branchList[Math.floor(Math.random() * branchList.length)].id;
+        setSelectedBranch(random);
+        await AsyncStorage.setItem("selectedBranch", random);
       }
     });
     return unsubscribe;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // 🍔 Lấy món ăn theo chi nhánh hiện tại (dựa vào branchFoods)
+  /** Lấy món theo chi nhánh hiện tại (branchFoods -> foods) */
   useEffect(() => {
     if (!selectedBranch) return;
 
-    const branchFoodsRef = collection(db, `branches/${selectedBranch}/branchFoods`);
+    const branchFoodsRef = collection(
+      db,
+      `branches/${selectedBranch}/branchFoods`
+    );
 
     const unsubscribe = onSnapshot(branchFoodsRef, async (snapshot) => {
-      const branchFoods = snapshot.docs
-        .map((d) => d.data())
-        .filter((f: any) => f.isActive === true);
+      try {
+        // raw branchFoods (docId có thể chính là foodId hoặc random)
+        const branchFoods = snapshot.docs.map((d) => ({
+          id: d.id,
+          ...(d.data() as any),
+        }));
 
-      if (branchFoods.length === 0) {
+        // chỉ lấy món đang khả dụng (mặc định true nếu không có cờ)
+        const actives = branchFoods.filter(
+          (f: any) => (f.isAvailable ?? f.isActive ?? true) === true
+        );
+
+        if (actives.length === 0) {
+          setFoods([]);
+          setFilteredFoods([]);
+          setLoading(false);
+          return;
+        }
+
+        // danh sách id để match về foods:
+        // ưu tiên field f.foodId; nếu không có thì dùng docId (f.id)
+        const foodIds = actives.map((f: any) => String(f.foodId ?? f.id));
+
+        // lấy foods có fallback theo field "id"
+        const visibleFoods = await fetchFoodsByIds(foodIds);
+
+        // SHUFFLE để "random"
+        const shuffled = shuffleArray(visibleFoods);
+
+        setFoods(shuffled);
+        // áp dụng search hiện tại nếu có
+        if (searchQuery.trim()) {
+          const q = searchQuery.toLowerCase();
+          setFilteredFoods(
+            shuffled.filter((f) => (f.name || "").toLowerCase().includes(q))
+          );
+        } else {
+          setFilteredFoods(shuffled);
+        }
+      } catch (e) {
+        console.error(e);
         setFoods([]);
         setFilteredFoods([]);
+      } finally {
         setLoading(false);
-        return;
       }
-
-      // Lấy danh sách foodId đang active
-      const foodIds = branchFoods.map((f: any) => f.foodId);
-
-      // Lấy toàn bộ món ăn trong foods
-      const foodsSnap = await getDocs(collection(db, "foods"));
-      const allFoods = foodsSnap.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as Food[];
-
-      // Lọc những món có foodId trùng với branchFoods
-      const visibleFoods = allFoods.filter((f) => foodIds.includes(f.id));
-      setFoods(visibleFoods);
-      setFilteredFoods(visibleFoods);
-      setLoading(false);
     });
 
     return () => unsubscribe();
-  }, [selectedBranch]);
+  }, [selectedBranch, searchQuery]);
 
-  // 💾 Lưu branch được chọn vào AsyncStorage
+  /** Lưu branch chọn */
   useEffect(() => {
     if (selectedBranch) AsyncStorage.setItem("selectedBranch", selectedBranch);
   }, [selectedBranch]);
 
-  // 🧍 Lấy tên người dùng hiển thị
+  /** Tên người dùng hiển thị */
   const userName =
     user?.firstName && user?.lastName
       ? `${user.firstName} ${user.lastName}`
@@ -131,7 +198,8 @@ const HomeScreen: React.FC = () => {
               >
                 <Ionicons name="storefront-outline" size={20} color="white" />
                 <Text style={styles.branchText}>
-                  {branches.find((b) => b.id === selectedBranch)?.name || "Chi nhánh"}
+                  {branches.find((b) => b.id === selectedBranch)?.name ||
+                    "Chi nhánh"}
                 </Text>
                 <Ionicons name="chevron-down" size={16} color="white" />
               </TouchableOpacity>
@@ -161,13 +229,7 @@ const HomeScreen: React.FC = () => {
                 placeholder="Nhập tên món ăn..."
                 placeholderTextColor="#999"
                 value={searchQuery}
-                onChangeText={(t) => {
-                  setSearchQuery(t);
-                  const result = foods.filter((f) =>
-                    f.name.toLowerCase().includes(t.toLowerCase())
-                  );
-                  setFilteredFoods(result);
-                }}
+                onChangeText={(t) => setSearchQuery(t)}
               />
             </View>
           </View>
@@ -182,7 +244,6 @@ const HomeScreen: React.FC = () => {
             dotStyle={{ backgroundColor: "#ccc" }}
             activeDotStyle={{ backgroundColor: "#F58220" }}
           >
-            
             <Image source={require("../images/slide1.png")} style={styles.banner} />
             <Image source={require("../images/slide2.png")} style={styles.banner} />
             <Image source={require("../images/slide3.png")} style={styles.banner} />
@@ -197,7 +258,7 @@ const HomeScreen: React.FC = () => {
           ) : (
             <FlatList
               data={filteredFoods}
-              keyExtractor={(item) => item.id.toString()}
+              keyExtractor={(item) => String(item.id)}
               renderItem={({ item }) => (
                 <FoodCard
                   food={item}
@@ -255,7 +316,7 @@ const HomeScreen: React.FC = () => {
 
 export default HomeScreen;
 
-// ============== STYLES ==============
+/* ============== STYLES ============== */
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff" },
   headerContainer: {

@@ -124,15 +124,20 @@ const MenuManage: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* 🔶 Header */}
+      {/* 🔶 Header có nút quay lại */}
       <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
+          <Ionicons name="arrow-back" size={24} color="#fff" />
+        </TouchableOpacity>
+
         <Text style={styles.headerTitle}>Thực đơn chi nhánh</Text>
+
         <TouchableOpacity
           onPress={() =>
             navigation.navigate("AddFood", { branchId: user?.branchId })
           }
         >
-          <Ionicons name="add-circle-outline" size={30} color="#fff" />
+          <Ionicons name="add-circle-outline" size={28} color="#fff" />
         </TouchableOpacity>
       </View>
 
@@ -211,7 +216,7 @@ const MenuManage: React.FC = () => {
                 <Text style={styles.name}>{item.name}</Text>
                 <Text
                   style={{
-                    color: item.isAvailable ? "white" : "#E53935",
+                    color: item.isAvailable ? "#33691E" : "#E53935",
                     fontSize: 12,
                     marginTop: 4,
                   }}
@@ -225,7 +230,7 @@ const MenuManage: React.FC = () => {
                 onValueChange={() =>
                   toggleAvailability(item.id, item.isAvailable)
                 }
-                trackColor={{ false: "#ccc", true: "red" }}
+                trackColor={{ false: "#ccc", true: "#F58220" }}
                 thumbColor="#fff"
                 style={{ transform: [{ scale: 0.9 }] }}
               />
@@ -241,7 +246,7 @@ export default MenuManage;
 
 /* 🎨 Styles */
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "white " },
+  container: { flex: 1, backgroundColor: "#fff" },
   header: {
     backgroundColor: "#CDDC39",
     flexDirection: "row",
@@ -249,20 +254,27 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 20,
+    borderBottomLeftRadius: 12,
+    borderBottomRightRadius: 12,
   },
-  headerTitle: { color: "black", fontWeight: "bold", fontSize: 20 },
+  backBtn: {
+    backgroundColor: "rgba(255,255,255,0.2)",
+    padding: 6,
+    borderRadius: 8,
+  },
+  headerTitle: { color: "#fff", fontWeight: "bold", fontSize: 20 },
   tabSection: { marginTop: 15 },
   tabScroll: { paddingHorizontal: 16 },
   tabButton: {
-    backgroundColor: "white",
+    backgroundColor: "#EDECEC",
     paddingHorizontal: 18,
     paddingVertical: 8,
     borderRadius: 20,
     marginRight: 10,
   },
-  activeTab: { backgroundColor: "white" },
+  activeTab: { backgroundColor: "#33691E" },
   tabText: { fontSize: 15, color: "#333", fontWeight: "600" },
-  activeTabText: { color: "#F57C00" },
+  activeTabText: { color: "#fff" },
   card: {
     flexDirection: "row",
     alignItems: "center",

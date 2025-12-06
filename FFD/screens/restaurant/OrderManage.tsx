@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
   View,
   Text,
@@ -24,7 +24,6 @@ import {
   doc,
 } from "firebase/firestore";
 
-// ======================== Tabs trạng thái ========================
 const statusTabs = [
   { key: "processing", label: "Chờ xác nhận" },
   { key: "preparing", label: "Đang chuẩn bị" },
@@ -37,11 +36,14 @@ const statusTabs = [
 const RestaurantOrderScreen: React.FC<{
   navigation: NavigationProp<RootStackParamList>;
 }> = ({ navigation }) => {
+  useLayoutEffect(() => {
+    navigation.setOptions({ headerShown: false });
+  }, [navigation]);
+
   const [orders, setOrders] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState("processing");
   const [loading, setLoading] = useState(true);
 
-  // 🔄 Lấy danh sách đơn hàng realtime
   useEffect(() => {
     const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -49,7 +51,6 @@ const RestaurantOrderScreen: React.FC<{
         const raw = docSnap.data();
         const createdAt = raw.createdAt?.toDate?.() || new Date();
 
-        // Chuẩn hoá item: đơn giá & thành tiền
         const items = (raw.items || []).map((it: any) => {
           const unit =
             Number(it?.price) ||
@@ -57,7 +58,6 @@ const RestaurantOrderScreen: React.FC<{
               Number(it?.selectedBase?.price || 0) +
               Number(it?.selectedTopping?.price || 0) +
               Number(it?.selectedAddOn?.price || 0);
-
           const qty = Number(it?.quantity || 1);
           return {
             name: it?.name || "",
@@ -65,11 +65,6 @@ const RestaurantOrderScreen: React.FC<{
             quantity: qty,
             unitPrice: unit,
             linePrice: unit * qty,
-            selectedSize: it?.selectedSize || null,
-            selectedBase: it?.selectedBase || null,
-            selectedTopping: it?.selectedTopping || null,
-            selectedAddOn: it?.selectedAddOn || null,
-            note: it?.note || "",
           };
         });
 
@@ -84,17 +79,13 @@ const RestaurantOrderScreen: React.FC<{
           id: docSnap.id,
           date: createdAt.toLocaleString("vi-VN"),
           status: raw.status || "processing",
-          receiverAddress:
-            raw.receiverAddress ||
-            "20/11, Lê Ngã, Phường Phú Trung, Quận Tân Phú, TP.HCM",
-          shippingMethod: raw.shippingMethod || "other", // ✅ dùng để show label
+          shippingMethod: raw.shippingMethod || "motorbike",
           items,
           subtotal,
           shippingFee,
           total,
         };
       });
-
       setOrders(data);
       setLoading(false);
     });
@@ -102,7 +93,6 @@ const RestaurantOrderScreen: React.FC<{
     return () => unsubscribe();
   }, []);
 
-  // ✅ Cập nhật trạng thái
   const handleUpdateStatus = async (orderId: string, newStatus: string) => {
     try {
       await updateDoc(doc(db, "orders", orderId), { status: newStatus });
@@ -124,14 +114,21 @@ const RestaurantOrderScreen: React.FC<{
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
+      {/* ===== HEADER (tự custom, có nút quay lại) ===== */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Quản lý đơn hàng</Text>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Ionicons name="arrow-back-outline" size={26} color="#fff" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Quản lý đơn hàng</Text>
+        </View>
+
         <Ionicons name="receipt-outline" size={30} color="#fff" />
       </View>
+
       <StatusBar barStyle="light-content" backgroundColor="#33691E" />
 
-      {/* Tabs */}
+      {/* ===== Tabs ===== */}
       <View style={styles.tabWrapper}>
         <ScrollView
           horizontal
@@ -160,7 +157,7 @@ const RestaurantOrderScreen: React.FC<{
         </ScrollView>
       </View>
 
-      {/* Danh sách đơn */}
+      {/* ===== Danh sách đơn ===== */}
       <FlatList
         data={filteredOrders}
         keyExtractor={(item) => item.id}
@@ -169,9 +166,6 @@ const RestaurantOrderScreen: React.FC<{
         renderItem={({ item }) => (
           <OrderCard
             order={item}
-            onViewDetail={() =>
-              navigation.navigate("RestaurantOrderDetail", { order: item })
-            }
             onConfirm={() => handleUpdateStatus(item.id, "preparing")}
             onDeliver={() => handleUpdateStatus(item.id, "delivering")}
             onComplete={() => handleUpdateStatus(item.id, "completed")}
@@ -191,24 +185,14 @@ const RestaurantOrderScreen: React.FC<{
 
 export default RestaurantOrderScreen;
 
-/* ======================== Card hiển thị từng đơn ======================== */
+// =================== OrderCard ===================
 const OrderCard = ({
   order,
-  onViewDetail,
   onConfirm,
   onDeliver,
   onComplete,
   onReject,
-}: {
-  order: any;
-  onViewDetail: () => void;
-  onConfirm: () => void;
-  onDeliver: () => void;
-  onComplete: () => void;
-  onReject: () => void;
-}) => {
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-
+}: any) => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "processing":
@@ -217,8 +201,6 @@ const OrderCard = ({
         return "#E040FB";
       case "delivering":
         return "#2196F3";
-      case "delivered":
-        return "#00d6cf";
       case "completed":
         return "#4CAF50";
       case "cancelled":
@@ -228,30 +210,25 @@ const OrderCard = ({
     }
   };
 
-  const getShippingLabel = (method?: string) => {
+  const getShippingLabel = (method: string) => {
     switch (method) {
-      case "drone":
-        return "Drone";
       case "motorbike":
         return "Xe máy";
+      case "drone":
+        return "Drone";
       default:
         return "Khác";
     }
   };
 
   return (
-    <TouchableOpacity
-      style={styles.orderCardContainer}
-      activeOpacity={0.85}
-      onPress={() => navigation.navigate("RestaurantOrderDetail", { order })}
-    >
-      {/* Header */}
+    <View style={styles.orderCardContainer}>
       <View style={styles.orderHeader}>
-        <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
           <View style={styles.mallBadge}>
-            <Text style={styles.mallText}>Delivery by </Text>
+            <Text style={styles.mallText}>Delivery by</Text>
           </View>
-          <Text style={[styles.branchName, { marginLeft: 6, flexShrink: 1 }]}>
+          <Text style={[styles.branchName, { marginLeft: 6 }]}>
             {getShippingLabel(order.shippingMethod)}
           </Text>
         </View>
@@ -262,7 +239,6 @@ const OrderCard = ({
         </Text>
       </View>
 
-      {/* Items */}
       {order.items.map((item: any, idx: number) => (
         <View key={idx} style={styles.itemRow}>
           <Image
@@ -275,21 +251,12 @@ const OrderCard = ({
             </Text>
             <Text style={styles.itemQty}>x{item.quantity}</Text>
             <Text style={styles.itemPrice}>
-              {Number(
-                item.unitPrice ??
-                  item.price ??
-                  (item.selectedSize?.price || 0) +
-                    (item.selectedBase?.price || 0) +
-                    (item.selectedTopping?.price || 0) +
-                    (item.selectedAddOn?.price || 0)
-              ).toLocaleString("vi-VN")}
-              ₫
+              {Number(item.unitPrice || 0).toLocaleString("vi-VN")}₫
             </Text>
           </View>
         </View>
       ))}
 
-      {/* Tổng tiền */}
       <View style={styles.totalRow}>
         <Text style={styles.totalLabel}>
           Tổng số tiền ({order.items.length} sản phẩm):
@@ -299,20 +266,20 @@ const OrderCard = ({
         </Text>
       </View>
 
-      {/* Footer hành động */}
+      {/* Footer nút hành động */}
       <View style={styles.cardFooter}>
         {order.status === "processing" && (
-          <TouchableOpacity style={styles.rejectButton} onPress={onReject}>
-            <Ionicons name="close-circle-outline" size={16} color="#fff" />
-            <Text style={styles.confirmText}>Từ chối</Text>
-          </TouchableOpacity>
-        )}
+          <>
+            <TouchableOpacity style={styles.rejectButton} onPress={onReject}>
+              <Ionicons name="close-circle-outline" size={16} color="#fff" />
+              <Text style={styles.confirmText}>Từ chối</Text>
+            </TouchableOpacity>
 
-        {order.status === "processing" && (
-          <TouchableOpacity style={styles.confirmButton} onPress={onConfirm}>
-            <Ionicons name="checkmark-outline" size={16} color="#fff" />
-            <Text style={styles.confirmText}>Xác nhận</Text>
-          </TouchableOpacity>
+            <TouchableOpacity style={styles.confirmButton} onPress={onConfirm}>
+              <Ionicons name="checkmark-outline" size={16} color="#fff" />
+              <Text style={styles.confirmText}>Xác nhận</Text>
+            </TouchableOpacity>
+          </>
         )}
         {order.status === "preparing" && (
           <TouchableOpacity style={styles.deliverButton} onPress={onDeliver}>
@@ -327,14 +294,13 @@ const OrderCard = ({
           </TouchableOpacity>
         )}
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 
-/* ======================== Styles ======================== */
+// =================== Styles ===================
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff" },
-
   header: {
     backgroundColor: "#CDDC39",
     flexDirection: "row",
@@ -345,8 +311,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 14,
     borderBottomRightRadius: 14,
   },
-  headerTitle: { color: "#fff", fontWeight: "bold", fontSize: 25 },
-
+  headerTitle: { color: "#fff", fontWeight: "bold", fontSize: 22 },
   tabWrapper: { marginVertical: 20 },
   tabScroll: { paddingHorizontal: 16, alignItems: "center" },
   tabButton: {
@@ -359,15 +324,12 @@ const styles = StyleSheet.create({
   activeTabButton: { backgroundColor: "#33691E" },
   tabText: { fontSize: 15, color: "#333", fontWeight: "600" },
   activeTabText: { color: "#fff" },
-
   emptyBox: { flex: 1, justifyContent: "center", alignItems: "center" },
   emptyText: { color: "#777", fontSize: 14, marginTop: 8 },
-
   orderCardContainer: {
     backgroundColor: "#fff",
     borderRadius: 10,
     marginTop: 10,
-    marginHorizontal: 0,
     paddingVertical: 12,
     paddingHorizontal: 14,
     borderWidth: 1,
@@ -376,10 +338,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 3,
     elevation: 2,
-    width: "100%", // ✅ full width
-    alignSelf: "center",
   },
-
   orderHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -395,7 +354,6 @@ const styles = StyleSheet.create({
   mallText: { color: "#fff", fontWeight: "bold", fontSize: 11 },
   branchName: { fontWeight: "600", fontSize: 14, color: "#222" },
   orderStatus: { fontWeight: "bold", fontSize: 13 },
-
   itemRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -407,13 +365,11 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 8,
-    resizeMode: "cover",
     backgroundColor: "#f5f5f5",
   },
   itemName: { fontSize: 13, color: "#333", fontWeight: "500" },
   itemQty: { fontSize: 12, color: "#777", marginTop: 2 },
   itemPrice: { fontSize: 13, fontWeight: "bold", color: "#E53935", marginTop: 2 },
-
   totalRow: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -422,7 +378,6 @@ const styles = StyleSheet.create({
   },
   totalLabel: { fontSize: 13, color: "#555" },
   totalValue: { fontSize: 14, fontWeight: "bold", color: "#E53935" },
-
   cardFooter: {
     flexDirection: "row",
     justifyContent: "flex-end",
@@ -463,6 +418,5 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   confirmText: { color: "#fff", fontSize: 13, fontWeight: "600", marginLeft: 4 },
-
   loadingBox: { flex: 1, justifyContent: "center", alignItems: "center" },
 });

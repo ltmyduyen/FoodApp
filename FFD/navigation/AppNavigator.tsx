@@ -28,6 +28,9 @@ import MenuManage from "../screens/restaurant/MenuManage";
 import RestaurantFoodDetail from "../screens/restaurant/RestaurantFoodDetail";
 import OrderManage from "../screens/restaurant/OrderManage";
 import AddFoodScreen from "../screens/restaurant/AddFood";
+import RevenueScreen from "../screens/restaurant/RevenueScreen";
+
+
 
 // ======= Màn hình Admin =======
 import UserDetail from "../screens/admin/UserDetail";
@@ -63,6 +66,9 @@ export type RootStackParamList = {
   OrderManage: undefined;
   RestaurantFoodDetail: { food: any };
   AddFood: { branchId?: string };
+
+  Revenue: undefined;
+
 
   UserDetail: { user: any };
   BranchDetail: { branch: any };
@@ -168,7 +174,10 @@ const AppNavigator: React.FC = () => {
           component={RestaurantNavigator}
           options={{ headerShown: false }}
         />
+        
       )}
+     
+
 
       {/* Admin */}
       {user?.role === "admin" && (
@@ -218,8 +227,9 @@ const AppNavigator: React.FC = () => {
       <Stack.Screen
         name="MenuManage"
         component={MenuManage}
-        options={{ title: "Quản lý thực đơn" }}
+        options={{ headerShown: false }} 
       />
+     
       <Stack.Screen
         name="RestaurantFoodDetail"
         component={RestaurantFoodDetail}
@@ -235,6 +245,13 @@ const AppNavigator: React.FC = () => {
         component={AddFoodScreen}
         options={{ title: "Thêm món mới" }}
       />
+      <Stack.Screen 
+        name="Revenue" 
+        component={RevenueScreen} 
+        options={{ headerShown: false }} 
+      />
+
+      
       {/* ⚙️ Admin – Các màn hình quản lý */}
      
       <Stack.Screen

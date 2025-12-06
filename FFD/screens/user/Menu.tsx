@@ -17,6 +17,16 @@ import { db } from "../../data/FireBase";
 import { Food } from "../../types/food";
 import FoodCard from "../../components/FoodCard";
 
+function shuffleArray<T>(arr: T[]): T[] {
+  // Fisher–Yates
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 const MenuScreen: React.FC = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -34,7 +44,7 @@ const MenuScreen: React.FC = () => {
   const [loadingBranches, setLoadingBranches] = useState(true);
   const [loadingBranchFoods, setLoadingBranchFoods] = useState(true);
 
-  // ===== 🏢 Lấy danh sách chi nhánh
+  // ===== 🏢 Lấy danh sách chi nhánh (mặc định chọn 1 chi nhánh NGẪU NHIÊN)
   useEffect(() => {
     const unsub = onSnapshot(collection(db, "branches"), (snap) => {
       const list = snap.docs.map((d) => ({
@@ -42,13 +52,17 @@ const MenuScreen: React.FC = () => {
         name: (d.data() as any).name,
       }));
       setBranches(list);
-      if (!activeBranch && list.length > 0) setActiveBranch(list[0].id);
+
+      if (!activeBranch && list.length > 0) {
+        const random = list[Math.floor(Math.random() * list.length)].id;
+        setActiveBranch(random);
+      }
       setLoadingBranches(false);
     });
     return unsub;
   }, []);
 
-  // ===== 🍔 Lấy danh sách món ăn (ÉP KIỂU number CHO price)
+  // ===== 🍔 Lấy danh sách món ăn (ép kiểu number cho price/rating/calories)
   useEffect(() => {
     const unsub = onSnapshot(collection(db, "foods"), (snap) => {
       const list: Food[] = snap.docs.map((doc) => {
@@ -63,7 +77,6 @@ const MenuScreen: React.FC = () => {
           calories:
             typeof d.calories === "number" ? d.calories : Number(d.calories) || 0,
           isActive: d.isActive ?? true,
-          // 👇 Quan trọng: đảm bảo là number
           price: typeof d.price === "number" ? d.price : Number(d.price) || 0,
         } as Food;
       });
@@ -87,9 +100,13 @@ const MenuScreen: React.FC = () => {
         const keys = new Set<string>();
         snap.forEach((d) => {
           const data = d.data() as any;
-          if (data?.isActive === true && data.foodId) {
-            keys.add(String(data.foodId));
-          }
+          const isOn =
+            data?.isActive === true ||
+            data?.isAvailable === true ||
+            (data?.isActive === undefined && data?.isAvailable === undefined); // default true nếu ko set
+        // nếu import dùng docId = foodId thì data.foodId có thể trống -> fallback doc.id
+          const fid = String(data?.foodId || d.id);
+          if (isOn && fid) keys.add(fid);
         });
         setBranchKeys(keys);
         setLoadingBranchFoods(false);
@@ -99,30 +116,35 @@ const MenuScreen: React.FC = () => {
     return unsub;
   }, [activeBranch]);
 
-  // ===== 🔖 Category động (lấy từ DB)
+  // ===== 🔖 Category động (từ toàn bộ foods)
   const categories = useMemo(() => {
     const set = new Set<string>(["Tất cả"]);
     foods.forEach((f) => f.category && set.add(f.category));
     return Array.from(set);
   }, [foods]);
 
-  // ===== 🔍 Lọc danh sách món hiển thị
+  // ===== 🔍 Lọc + xáo trộn danh sách món hiển thị
   useEffect(() => {
     if (loadingFoods || loadingBranches || loadingBranchFoods) return;
 
     let result = foods;
 
-    // Lọc theo branchFoods
-    if (activeBranch && branchKeys.size > 0) {
-      result = result.filter((f) => branchKeys.has(f.id));
-    } else {
-      result = [];
+    // Lọc theo branchFoods (giữ các món có trong subcollection)
+    if (activeBranch) {
+      if (branchKeys.size > 0) {
+        result = result.filter((f) => branchKeys.has(f.id));
+      } else {
+        result = [];
+      }
     }
 
     // Lọc theo category
     if (activeCategory !== "Tất cả") {
       result = result.filter((f) => f.category === activeCategory);
     }
+
+    // Random thứ tự hiển thị cho “cảm giác” khác nhau
+    result = shuffleArray(result);
 
     setFilteredFoods(result);
   }, [
@@ -148,8 +170,7 @@ const MenuScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* ===== Tabs Chi nhánh ===== */}
-      <View style={styles.tabSection}>
+      <View style={[styles.tabSection, { marginTop: 14 }]}>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
