@@ -1,0 +1,44 @@
+[
+  {
+    "id": "DR01",
+    "name": "Delivery Drone A1",
+    "model": "DJI FlyCart 30",
+    "status": "available",
+    "battery": 92,
+    "maxPayloadKg": 30,
+    "rangeKm": 16,
+    "speedKmh": 20,
+    "currentLocation": {
+      "lat": 10.776889,
+      "lng": 106.700806
+    },
+    "createdAt": "2025-12-17T01:00:00+07:00"
+  },
+  {
+    "id": "DR02",
+    "name": "Delivery Drone B2",
+    "model": "DJI Mini 4 Pro",
+    "status": "charging",
+    "battery": 45,
+    "maxPayloadKg": 2,
+    "rangeKm": 18,
+    "speedKmh": 16,
+    "currentLocation": {
+      "lat": 10.762622,
+      "lng": 106.660172
+    },
+    "createdAt": "2025-12-17T01:05:00+07:00"
+  },
+  {
+    "id": "DR03",
+    "name": "Delivery Drone C3",
+    "model": "Autel EVO II",
+    "status": "maintenance",
+    "battery": 0,
+    "maxPayloadKg": 5,
+    "rangeKm": 25,
+    "speedKmh": 22,
+    "currentLocation": null,
+    "createdAt": "2025-12-17T01:10:00+07:00"
+  }
+]

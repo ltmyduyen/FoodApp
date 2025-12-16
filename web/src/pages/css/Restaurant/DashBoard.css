@@ -1,31 +1,38 @@
-/* ===== LAYOUT CHUNG ===== */
+/* ===== WRAP (full background) ===== */
 .rest-dash-wrap {
   min-height: 100vh;
-  padding: 24px 24px 40px;
+  padding: 28px 18px 44px;
   box-sizing: border-box;
   background: linear-gradient(135deg, #fef9c3, #fde68a, #fed7aa);
+}
+
+/* ===== CONTAINER (giới hạn bề ngang cho đẹp) ===== */
+.rest-dash-container {
+  max-width: 1180px;
+  margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(260px, 0.9fr) 2fr;
-  grid-template-rows: auto 1fr;
+  grid-template-columns: minmax(280px, 0.9fr) 2fr;
   grid-template-areas:
     "head head"
     "cards table";
-  gap: 20px;
+  gap: 18px;
 }
 
-/* HEADER */
+/* ===== HEADER ===== */
 .rest-dash-head {
   grid-area: head;
   display: flex;
-  justify-content: space-between;
   align-items: flex-end;
+  justify-content: space-between;
+  padding: 6px 6px 2px;
 }
 
 .rest-dash-title {
-  margin: 0 0 4px;
-  font-size: 24px;
-  font-weight: 700;
+  margin: 0 0 6px;
+  font-size: 28px;
+  font-weight: 800;
   color: #111827;
+  letter-spacing: -0.3px;
 }
 
 .rest-dash-sub {
@@ -34,12 +41,7 @@
   color: #6b7280;
 }
 
-.rest-dash-head::after {
-  content: attr(data-date);
-  /* nếu muốn có ngày ở đây thì trong JSX thêm data-date, còn không thì bỏ dòng này */
-}
-
-/* ===== CỘT TRÁI: CARDS ===== */
+/* ===== LEFT: CARDS ===== */
 .rest-dash-cards {
   grid-area: cards;
   display: flex;
@@ -49,79 +51,74 @@
 
 .rest-dash-card {
   position: relative;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.92);
   border-radius: 18px;
-  padding: 14px 16px;
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  padding: 16px 18px;
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.08);
   overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.20);
 }
 
-/* viền màu bên trái */
 .rest-dash-card::before {
   content: "";
   position: absolute;
-  inset: 0;
-  width: 5px;
+  left: 0;
+  top: 12px;
+  bottom: 12px;
+  width: 6px;
+  border-radius: 999px;
   background: #f97316;
 }
 
-/* card 1,2,3 màu khác nhau */
-.rest-dash-card:nth-child(1)::before {
-  background: #f97316; /* cam */
-}
-.rest-dash-card:nth-child(2)::before {
-  background: #22c55e; /* xanh lá */
-}
-.rest-dash-card:nth-child(3)::before {
-  background: #0ea5e9; /* xanh dương */
-}
-
-/* nội dung card dịch sang phải để tránh đè lên viền */
-.rest-dash-card > * {
-  margin-left: 6px;
-}
+/* card 1/2/3 màu viền */
+.rest-dash-card:nth-child(1)::before { background: #f97316; }
+.rest-dash-card:nth-child(2)::before { background: #22c55e; }
+.rest-dash-card:nth-child(3)::before { background: #0ea5e9; }
 
 .rd-label {
   font-size: 13px;
   color: #6b7280;
-  margin-bottom: 4px;
+  margin: 0 0 6px 10px;
 }
 
 .rd-value {
-  font-size: 28px;
-  font-weight: 700;
+  margin: 0 0 0 10px;
+  font-size: 30px;
+  font-weight: 800;
   color: #111827;
+  line-height: 1.1;
 }
 
-/* card doanh thu làm nổi hơn */
+/* card doanh thu nổi hơn */
 .rest-dash-card:nth-child(3) {
-  background: radial-gradient(circle at top left, #fee2e2, #ffffff);
+  background: radial-gradient(circle at top left, #fee2e2 0%, #ffffff 62%);
 }
-
 .rest-dash-card:nth-child(3) .rd-value {
   color: #b91c1c;
 }
 
-/* ===== CỘT PHẢI: HỘP ĐƠN GẦN ĐÂY ===== */
+/* ===== RIGHT: BOX ===== */
 .rest-dash-box {
   grid-area: table;
-  background: #ffffff;
+  background: #fff;
   border-radius: 18px;
   padding: 16px 16px 12px;
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.08);
   border: 1px solid rgba(148, 163, 184, 0.25);
 }
 
 .rest-dash-box-head {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   margin-bottom: 10px;
 }
 
 .rest-dash-box-head h2 {
   margin: 0;
   font-size: 16px;
+  font-weight: 800;
+  color: #111827;
 }
 
 .rd-empty {
@@ -138,70 +135,70 @@
 
 .rd-table thead th {
   text-align: left;
-  padding: 8px 6px;
+  padding: 10px 8px;
   font-size: 12.5px;
   color: #6b7280;
   border-bottom: 1px solid #e5e7eb;
+  background: #fff;
 }
 
-/* zebra stripe */
 .rd-table tbody tr:nth-child(odd) {
   background-color: #f9fafb;
 }
 
 .rd-table tbody td {
-  padding: 8px 6px;
+  padding: 10px 8px;
   border-bottom: 1px solid #f3f4f6;
+  color: #111827;
+}
+
+.rd-table tbody tr:hover {
+  background: #f3f4f6;
 }
 
 /* ===== STATUS BADGE ===== */
 .rd-badge {
   display: inline-block;
-  padding: 3px 10px;
+  padding: 4px 10px;
   border-radius: 999px;
   font-size: 11.5px;
-  font-weight: 600;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
 .rd-processing {
-  background: rgba(239, 68, 68, 0.08);
+  background: rgba(239, 68, 68, 0.10);
   color: #b91c1c;
 }
 .rd-preparing {
-  background: rgba(249, 115, 22, 0.08);
+  background: rgba(249, 115, 22, 0.12);
   color: #c05621;
 }
 .rd-shipping {
-  background: rgba(14, 165, 233, 0.08);
+  background: rgba(14, 165, 233, 0.12);
   color: #0369a1;
 }
 .rd-completed {
-  background: rgba(34, 197, 94, 0.08);
+  background: rgba(34, 197, 94, 0.12);
   color: #166534;
 }
 .rd-cancelled {
-  background: rgba(107, 114, 128, 0.08);
+  background: rgba(107, 114, 128, 0.12);
   color: #374151;
 }
 .rd-other {
-  background: rgba(148, 163, 184, 0.1);
+  background: rgba(148, 163, 184, 0.12);
   color: #1f2937;
 }
 
 /* ===== RESPONSIVE ===== */
-@media (max-width: 900px) {
-  .rest-dash-wrap {
-    display: block;
-    padding: 18px 14px 30px;
-    background: #edf0f5;
-  }
-
-  .rest-dash-head {
-    margin-bottom: 14px;
-  }
-
-  .rest-dash-cards {
-    margin-bottom: 16px;
+@media (max-width: 980px) {
+  .rest-dash-container {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "head"
+      "cards"
+      "table";
   }
 }
 
@@ -213,10 +210,12 @@
   .rd-table tbody tr {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 3px 6px;
+    gap: 6px 10px;
+    padding: 10px 6px;
   }
 
   .rd-table tbody td {
+    padding: 4px 6px;
     border-bottom: none;
   }
 }
