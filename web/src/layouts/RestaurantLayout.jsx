@@ -1,13 +1,13 @@
 // src/layouts/RestaurantLayout.jsx
 import { Outlet } from "react-router-dom";
-import RestaurantSidebar from "../components/Restaurant/Sidebar.jsx";
+import RestaurantSidebar from "../components/Restaurant/ResSidebar.jsx";
 
 
 export default function RestaurantLayout() {
   return (
-    <div className="rest-shell">
-      <RestaurantSidebar />      {/* topbar ngang */}
-      <main className="rest-main">
+    <div className="admin-layout">
+      <RestaurantSidebar />
+      <main className="admin-main">
         <Outlet />
       </main>
     </div>
