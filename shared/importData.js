@@ -63,15 +63,13 @@ async function importCollection(collectionName, data, prefix = "") {
 async function run() {
   const foods = loadJSON("./foods.json");
   const branches = loadJSON("./restaurants.json"); // hoặc branches.json
- // const users = loadJSON("./users.json"); // nếu có
   const drones = loadJSON("./drones.json");
 
   console.log("🚀 Bắt đầu import toàn bộ dữ liệu...\n");
 
   await importCollection("foods", foods, "F");
   await importCollection("branches", branches, "B");
-  //await importCollection("users", users, "U");
-  await importCollection("drones", users, "D");
+  await importCollection("drones", drones, "D");
 
   console.log("🏁 Tất cả collection đã import xong!");
 }
