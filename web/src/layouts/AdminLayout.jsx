@@ -7,11 +7,10 @@ export default function AdminLayout() {
     <div className="adm-shell">
       <AdminSidebar />
 
-      <div className="adm-main">
-                <main className="adm-content">
-          <Outlet />
-        </main>
-      </div>
+      {/* MAIN CONTENT */}
+      <main className="adm-main">
+        <Outlet />
+      </main>
     </div>
   );
 }
