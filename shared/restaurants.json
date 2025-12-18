@@ -22,5 +22,15 @@
     "phone": "",
     "phoneNumber": "0888888888",
     "isActive": false
+    
+  },
+  {
+    "id": "B04",
+    "name": "Eat Clean 4",
+    "address": "Tân Phú, HCM",
+    "phone": "",
+    "phoneNumber": "0905345875",
+    "isActive": true
   }
+
 ]

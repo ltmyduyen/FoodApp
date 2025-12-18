@@ -5,7 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import UsersManage from "../screens/admin/UsersManage";
 import BranchesManage from "../screens/admin/BranchesManage";
 import DronesManage from "../screens/admin/DronesManage";
-
+import RevenueSummaryAdmin from "../screens/admin/RevenueSummaryAdmin";
 import AdminAccount from "../screens/admin/AdminAccount";
 
 const Tab = createBottomTabNavigator();
@@ -30,6 +30,7 @@ export default function AdminNavigator() {
         tabBarLabelStyle: { fontSize: 14 },
         tabBarIcon: ({ focused, color }) => {
           let iconName = "";
+
           switch (route.name) {
             case "Người dùng":
               iconName = focused ? "people" : "people-outline";
@@ -40,10 +41,14 @@ export default function AdminNavigator() {
             case "Drone":
               iconName = focused ? "airplane" : "airplane-outline";
               break;
+            case "Doanh thu":
+              iconName = focused ? "stats-chart" : "stats-chart-outline";
+              break;
             case "Tài khoản":
               iconName = focused ? "person" : "person-outline";
               break;
           }
+
           return <Ionicons name={iconName as any} size={24} color={color} />;
         },
         tabBarActiveTintColor: "#F58220",
@@ -53,6 +58,7 @@ export default function AdminNavigator() {
       <Tab.Screen name="Người dùng" component={UsersManage} />
       <Tab.Screen name="Chi nhánh" component={BranchesManage} />
       <Tab.Screen name="Drone" component={DronesManage} />
+      <Tab.Screen name="Doanh thu" component={RevenueSummaryAdmin} />
       <Tab.Screen name="Tài khoản" component={AdminAccount} />
     </Tab.Navigator>
   );

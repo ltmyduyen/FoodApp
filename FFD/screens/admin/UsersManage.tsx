@@ -41,7 +41,7 @@ const UsersManage = ({ navigation }: any) => {  const [users, setUsers] = useSta
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Danh sách tài khoảng</Text>
+      <Text style={styles.header}>Danh sách tài khoản</Text>
       <FlatList
         data={users}
         keyExtractor={(item) => item.id}
