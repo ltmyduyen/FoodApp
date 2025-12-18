@@ -6,22 +6,25 @@ import {
   FlatList,
   ActivityIndicator,
   TouchableOpacity,
+  ScrollView,
+  Dimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../data/FireBase";
+import { BarChart } from "react-native-chart-kit";
 
 type OrderItem = {
   foodId?: string;
-  price?: number;        // nếu có snapshot price
-  quantity?: number;     // nếu có
+  price?: number; // nếu có snapshot price
+  quantity?: number; // nếu có
 };
 
 type OrderDoc = {
   id: string;
-  branchId?: string;      // hoặc restaurantId tuỳ data
+  branchId?: string; // hoặc restaurantId tuỳ data
   restaurantId?: string;
-  status?: string;        // delivered / completed / ...
+  status?: string; // delivered / completed / ...
   createdAt?: any;
   total?: number;
   totalAmount?: number;
@@ -159,6 +162,25 @@ const RevenueSummaryAdmin = ({ navigation }: any) => {
       currency: "VND",
     }).format(n || 0);
 
+  // =========================
+  // ✅ Bar chart data (Top N)
+  // =========================
+  const screenWidth = Dimensions.get("window").width;
+  const TOP_N = 8;
+
+  const chartRows = useMemo(
+    () => summary.rows.slice(0, TOP_N),
+    [summary.rows]
+  );
+
+  const barData = useMemo(() => {
+    // label gọn cho khỏi đè nhau: lấy 4 ký tự cuối ID
+    const labels = chartRows.map((r) => String(r.id).slice(-4));
+    // đổi sang "nghìn VND" cho chart dễ nhìn
+    const values = chartRows.map((r) => Math.round((r.revenue || 0) / 1000));
+    return { labels, datasets: [{ data: values }] };
+  }, [chartRows]);
+
   if (loading) {
     return (
       <View style={styles.center}>
@@ -173,8 +195,6 @@ const RevenueSummaryAdmin = ({ navigation }: any) => {
       <View style={styles.headRow}>
         <Text style={styles.header}>Doanh thu tổng hợp</Text>
 
-        {/* Bạn đang ở tab thì goBack có thể không cần.
-           Nếu muốn: đổi thành navigation.navigate("Người dùng") */}
         <TouchableOpacity onPress={() => navigation.navigate("Người dùng")}>
           <Ionicons name="close" size={24} color="#333" />
         </TouchableOpacity>
@@ -194,6 +214,39 @@ const RevenueSummaryAdmin = ({ navigation }: any) => {
             </Text>
           </View>
         </View>
+      </View>
+
+      {/* ✅ Bar chart */}
+      <View style={styles.chartCard}>
+        <Text style={styles.chartTitle}>
+          So sánh doanh thu theo nhà hàng/chi nhánh (Top {TOP_N}) — đơn vị: nghìn
+          VND
+        </Text>
+
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <BarChart
+            data={barData}
+            width={Math.max(screenWidth - 32, chartRows.length * 70)} // mỗi cột ~70px
+            height={240}
+            fromZero
+            showValuesOnTopOfBars
+            yAxisSuffix="k"
+            chartConfig={{
+              backgroundGradientFrom: "#fff",
+              backgroundGradientTo: "#fff",
+              decimalPlaces: 0,
+              color: (opacity = 1) => `rgba(46, 125, 50, ${opacity})`,
+              labelColor: (opacity = 1) => `rgba(0,0,0, ${opacity})`,
+              style: { borderRadius: 12 },
+            }}
+            style={{ borderRadius: 12 }}
+          />
+        </ScrollView>
+
+        <Text style={styles.chartHint}>
+          Label đang lấy 4 ký tự cuối của ID cho gọn. Muốn hiện full ID thì tao
+          đổi.
+        </Text>
       </View>
 
       <Text style={styles.sectionTitle}>Doanh thu theo nhà hàng/chi nhánh</Text>
@@ -252,6 +305,17 @@ const styles = StyleSheet.create({
   totalLabel: { color: "#2E7D32", fontWeight: "700" },
   totalValue: { fontSize: 20, fontWeight: "800", marginTop: 2 },
   meta: { marginTop: 6, fontSize: 12, color: "#777" },
+
+  chartCard: {
+    marginTop: 12,
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: "#eee",
+  },
+  chartTitle: { fontWeight: "800", marginBottom: 8, fontSize: 14 },
+  chartHint: { marginTop: 8, fontSize: 12, color: "#777" },
 
   sectionTitle: {
     marginTop: 14,
